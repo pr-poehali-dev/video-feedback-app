@@ -31,7 +31,7 @@ const Index = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: 'environment', // Тыловая камера
+          facingMode: 'environment',
           width: { ideal: 640 },
           height: { ideal: 360 },
         },
@@ -44,7 +44,7 @@ const Index = () => {
       }
 
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp8,opus', // Совместимость с iOS и Android
+        mimeType: 'video/webm;codecs=vp8,opus',
       });
 
       chunksRef.current = [];
@@ -126,7 +126,6 @@ const Index = () => {
       formData.append('comments', comments);
       formData.append('video', videoState.recordedBlob, 'lead-video.webm');
 
-      // Отправка через backend функцию
       const response = await fetch('https://functions.poehali.dev/56850dbd-ea0f-428f-b6e0-1814383f74c6', {
         method: 'POST',
         body: formData,
@@ -166,198 +165,206 @@ const Index = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <Card className="w-full max-w-md text-center minimal-card border-0 shadow-lg">
-          <CardContent className="pt-12 pb-12 px-8">
+      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+        <div className="modern-card w-full max-w-md text-center success-animation">
+          <div className="p-12">
             <div className="mb-8">
-              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                <Icon name="CheckCircle" size={40} className="text-white" />
+              <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                <Icon name="CheckCircle" size={48} className="text-white" />
               </div>
-              <h2 className="text-2xl font-semibold mb-3" style={{color: '#1E3A8A'}}>
-                Отправлено успешно
+              <h2 className="text-3xl font-bold text-primary mb-4">
+                Успешно отправлено!
               </h2>
-              <p className="text-sm leading-relaxed" style={{color: '#64748B'}}>
-                Ваш лид получен и обрабатывается
+              <p className="text-secondary text-lg">
+                Ваш лид получен и будет обработан в ближайшее время
               </p>
             </div>
-            <Button 
+            <button 
               onClick={createNewLead}
-              className="w-full minimal-button bg-primary hover:bg-primary/90 border-0 h-12 rounded-lg font-medium"
-              size="lg"
+              className="modern-button w-full text-lg py-4"
             >
-              <Icon name="Plus" className="w-4 h-4 mr-2" />
+              <Icon name="Plus" className="w-5 h-5 mr-3" />
               Создать новый лид
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-5xl mx-auto">
-        <header className="text-center mb-12 pt-12">
-          <h1 className="text-4xl font-bold mb-4 tracking-tight" style={{color: '#1E3A8A'}}>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        {/* Header */}
+        <header className="text-center mb-16 fade-in">
+          <h1 className="text-5xl font-bold text-primary mb-6 tracking-tight">
             Видео Лид
           </h1>
-          <p className="text-lg font-medium max-w-xl mx-auto" style={{color: '#64748B'}}>
-            Оставьте комментарий и запишите короткое видео
+          <p className="text-secondary text-xl max-w-2xl mx-auto leading-relaxed">
+            Создайте персональное видеосообщение с комментарием для быстрой связи
           </p>
         </header>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Блок анкеты */}
-          <Card className="minimal-card border-0 shadow-md">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center text-lg font-semibold" style={{color: '#1E3A8A'}}>
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
-                  <Icon name="MessageSquare" className="w-4 h-4 text-white" />
+        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+          {/* Блок комментариев */}
+          <div className="modern-card fade-in">
+            <div className="p-8">
+              <div className="flex items-center mb-6">
+                <div className="icon-badge mr-4">
+                  <Icon name="MessageSquare" className="w-6 h-6 text-white" />
                 </div>
-                Комментарий
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
+                <h3 className="text-2xl font-bold text-primary">
+                  Ваш комментарий
+                </h3>
+              </div>
+              
               <div className="space-y-4">
-                <Label htmlFor="comments" className="text-sm font-medium" style={{color: '#64748B'}}>
+                <Label htmlFor="comments" className="text-base font-semibold text-secondary block">
                   Опишите ваш запрос или вопрос
                 </Label>
-                <Textarea
+                <textarea
                   id="comments"
-                  placeholder="Ваше сообщение..."
+                  placeholder="Расскажите о своем проекте или задайте вопрос..."
                   value={comments}
                   onChange={(e) => setComments(e.target.value)}
-                  className="min-h-[140px] resize-none border-0 bg-muted/50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="modern-input w-full min-h-[160px] resize-none"
                   maxLength={500}
                 />
-                <div className="text-xs flex justify-between" style={{color: '#64748B'}}>
-                  <span>Максимум 500 символов</span>
-                  <span className={comments.length > 450 ? 'text-orange-500' : ''}>{comments.length}/500</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-secondary">Максимум 500 символов</span>
+                  <span className={`font-semibold ${comments.length > 450 ? 'text-orange-500' : 'text-accent'}`}>
+                    {comments.length}/500
+                  </span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Блок видеозаписи */}
-          <Card className="minimal-card border-0 shadow-md">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center text-lg font-semibold" style={{color: '#1E3A8A'}}>
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
-                  <Icon name="Video" className="w-4 h-4 text-white" />
+          {/* Блок видео */}
+          <div className="modern-card fade-in">
+            <div className="p-8">
+              <div className="flex items-center mb-6">
+                <div className="icon-badge mr-4">
+                  <Icon name="Video" className="w-6 h-6 text-white" />
                 </div>
-                Видеосообщение
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
+                <h3 className="text-2xl font-bold text-primary">
+                  Видеосообщение
+                </h3>
+              </div>
+              
               <div className="space-y-6">
                 <div className="relative">
                   <video
                     ref={videoRef}
-                    className={`w-full h-56 rounded-xl object-cover ${
+                    className={`w-full h-64 rounded-2xl object-cover ${
                       !videoState.isRecording && !videoState.recordedBlob 
-                        ? 'video-placeholder' 
-                        : 'bg-black'
+                        ? 'hidden' 
+                        : 'block bg-black'
                     }`}
-                    style={{ 
-                      display: videoState.isRecording || videoState.recordedBlob ? 'block' : 'none' 
-                    }}
                     muted
                     playsInline
                   />
                   
                   {!videoState.isRecording && !videoState.recordedBlob && (
-                    <div className="video-placeholder w-full h-56 rounded-xl flex items-center justify-center">
+                    <div className="video-container w-full h-64 flex items-center justify-center">
                       <div className="text-center">
-                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Icon name="Camera" size={32} className="text-primary opacity-70" />
+                        <div className="w-20 h-20 bg-white/80 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                          <Icon name="Camera" size={40} className="text-accent" />
                         </div>
-                        <p className="text-sm font-medium" style={{color: '#64748B'}}>Готово к записи</p>
+                        <p className="text-lg font-semibold text-secondary">
+                          Нажмите для записи видео
+                        </p>
+                        <p className="text-sm text-secondary mt-2">
+                          HD качество • Автоматическая настройка
+                        </p>
                       </div>
                     </div>
                   )}
 
                   {videoState.isRecording && (
-                    <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-xs recording-indicator flex items-center">
-                      <div className="w-2 h-2 bg-white rounded-full mr-2"></div>
-                      Запись
+                    <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold recording-pulse flex items-center">
+                      <div className="w-3 h-3 bg-white rounded-full mr-2"></div>
+                      REC
                     </div>
                   )}
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {!videoState.isRecording && !videoState.recordedBlob && (
-                    <Button 
+                    <button 
                       onClick={startRecording}
-                      className="w-full minimal-button bg-primary hover:bg-primary/90 border-0 h-12 rounded-lg font-medium"
-                      size="lg"
+                      className="modern-button w-full text-lg py-4"
                     >
-                      <Icon name="Play" className="w-4 h-4 mr-2" />
+                      <Icon name="Play" className="w-5 h-5 mr-3" />
                       Начать запись
-                    </Button>
+                    </button>
                   )}
 
                   {videoState.isRecording && (
-                    <Button 
+                    <button 
                       onClick={stopRecording}
-                      className="w-full bg-red-500 hover:bg-red-600 border-0 h-12 rounded-lg font-medium"
-                      size="lg"
+                      className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-lg"
                     >
-                      <Icon name="Square" className="w-4 h-4 mr-2" />
-                      Остановить
-                    </Button>
+                      <Icon name="Square" className="w-5 h-5 mr-3" />
+                      Остановить запись
+                    </button>
                   )}
 
                   {videoState.recordedBlob && !videoState.isRecording && (
-                    <div className="flex space-x-3">
-                      <Button 
+                    <div className="flex space-x-4">
+                      <button 
                         onClick={retakeVideo}
-                        variant="outline"
-                        className="flex-1 h-12 rounded-lg border-border/50 hover:bg-muted/50"
+                        className="flex-1 bg-surface border-2 border-gray-300 text-secondary font-semibold py-4 px-6 rounded-xl hover:bg-gray-50 transition-all duration-300"
                       >
-                        <Icon name="RotateCcw" className="w-4 h-4 mr-2" />
+                        <Icon name="RotateCcw" className="w-5 h-5 mr-2" />
                         Переснять
-                      </Button>
-                      <div className="flex items-center px-4 py-3 bg-green-50 text-green-700 rounded-lg border border-green-200">
-                        <Icon name="CheckCircle2" className="w-4 h-4 mr-2" />
-                        <span className="text-sm font-medium">Готово</span>
+                      </button>
+                      <div className="flex items-center px-6 py-4 bg-green-50 text-green-700 rounded-xl border-2 border-green-200">
+                        <Icon name="CheckCircle2" className="w-5 h-5 mr-2" />
+                        <span className="font-semibold">Готово</span>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="text-xs rounded-lg p-3 space-y-1" style={{color: '#64748B', backgroundColor: '#F1F5F9'}}>
-                  <p>• HD качество 360p для быстрой отправки</p>
-                  <p>• Автоматический выбор основной камеры</p>
-                  <p>• Оптимизировано для всех устройств</p>
+                <div className="bg-surface rounded-xl p-4">
+                  <div className="text-sm text-secondary space-y-1">
+                    <p>✓ Качество 360p для быстрой отправки</p>
+                    <p>✓ Совместимо со всеми устройствами</p>
+                    <p>✓ Автоматическое сжатие видео</p>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Кнопка отправки */}
-        <div className="mt-12 text-center">
-          <Button 
+        <div className="text-center fade-in">
+          <button 
             onClick={submitLead}
             disabled={!comments.trim() || !videoState.recordedBlob || isSubmitting}
-            size="lg"
-            className="px-16 h-14 text-base minimal-button bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 border-0 rounded-xl font-medium shadow-lg"
+            className={`modern-button text-xl py-6 px-16 ${
+              (!comments.trim() || !videoState.recordedBlob || isSubmitting) 
+                ? 'opacity-50 cursor-not-allowed' 
+                : ''
+            }`}
           >
             {isSubmitting ? (
               <>
-                <Icon name="Loader2" className="w-5 h-5 mr-3 animate-spin" />
+                <Icon name="Loader2" className="w-6 h-6 mr-3 animate-spin" />
                 Отправляем...
               </>
             ) : (
               <>
-                <Icon name="Send" className="w-5 h-5 mr-3" />
+                <Icon name="Send" className="w-6 h-6 mr-3" />
                 Отправить лид
               </>
             )}
-          </Button>
+          </button>
           
           {(!comments.trim() || !videoState.recordedBlob) && (
-            <p className="text-sm mt-4" style={{color: '#64748B'}}>
+            <p className="text-secondary mt-4 text-lg">
               {!comments.trim() && !videoState.recordedBlob 
                 ? 'Добавьте комментарий и запишите видео' 
                 : !comments.trim() 

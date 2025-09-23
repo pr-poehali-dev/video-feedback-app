@@ -238,32 +238,39 @@ const Index = () => {
               </label>
               
               <div className="relative">
+                {/* Скрытое видео для записи */}
                 <video
                   ref={videoRef}
-                  className={`w-full h-48 rounded-lg object-cover ${
-                    !videoState.isRecording && !videoState.recordedBlob 
-                      ? 'hidden' 
-                      : 'block bg-black'
-                  }`}
+                  className="hidden"
                   muted
                   playsInline
                 />
                 
-                {!videoState.isRecording && !videoState.recordedBlob && (
-                  <div className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <Icon name="Camera" size={32} className="text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-500">Нажмите для записи</p>
-                    </div>
+                {/* Заглушка вместо превью */}
+                <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                  <div className="text-center">
+                    {!videoState.isRecording && !videoState.recordedBlob && (
+                      <>
+                        <Icon name="Camera" size={32} className="text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-500">Нажмите для записи</p>
+                      </>
+                    )}
+                    
+                    {videoState.isRecording && (
+                      <>
+                        <div className="w-4 h-4 bg-red-500 rounded-full mx-auto mb-2 animate-pulse"></div>
+                        <p className="text-red-600 font-medium">Идет запись...</p>
+                      </>
+                    )}
+                    
+                    {videoState.recordedBlob && !videoState.isRecording && (
+                      <>
+                        <Icon name="CheckCircle" size={32} className="text-green-500 mx-auto mb-2" />
+                        <p className="text-green-600 font-medium">Видео записано</p>
+                      </>
+                    )}
                   </div>
-                )}
-
-                {videoState.isRecording && (
-                  <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                    <div className="w-2 h-2 bg-white rounded-full mr-2"></div>
-                    REC
-                  </div>
-                )}
+                </div>
               </div>
 
               <div className="mt-4 space-y-3">

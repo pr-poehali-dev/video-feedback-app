@@ -6,64 +6,64 @@
 
 @layer base {
   :root {
-    --background: 249 250 251; /* #F9FAFB */
-    --foreground: 31 41 55; /* #1F2937 */
-    --card: 255 255 255; /* #FFFFFF */
-    --card-foreground: 31 41 55; /* #1F2937 */
+    --background: 248 250 252; /* #F8FAFC - очень светлый синий */
+    --foreground: 30 58 138; /* #1E3A8A - глубокий синий */
+    --card: 255 255 255; /* #FFFFFF - чистый белый */
+    --card-foreground: 30 58 138; /* #1E3A8A - глубокий синий */
     --popover: 255 255 255; /* #FFFFFF */
-    --popover-foreground: 31 41 55; /* #1F2937 */
-    --primary: 59 130 246; /* #3B82F6 */
+    --popover-foreground: 30 58 138; /* #1E3A8A */
+    --primary: 37 99 235; /* #2563EB - яркий синий */
     --primary-foreground: 255 255 255; /* #FFFFFF */
-    --secondary: 229 231 235; /* #E5E7EB */
-    --secondary-foreground: 31 41 55; /* #1F2937 */
-    --muted: 243 244 246; /* #F3F4F6 */
-    --muted-foreground: 107 114 128; /* #6B7280 */
-    --accent: 219 234 254; /* #DBEAFE */
-    --accent-foreground: 31 41 55; /* #1F2937 */
+    --secondary: 241 245 249; /* #F1F5F9 - очень светлый синий */
+    --secondary-foreground: 30 58 138; /* #1E3A8A */
+    --muted: 248 250 252; /* #F8FAFC - светлейший синий */
+    --muted-foreground: 100 116 139; /* #64748B - средний сине-серый */
+    --accent: 219 234 254; /* #DBEAFE - светлый голубой */
+    --accent-foreground: 30 58 138; /* #1E3A8A */
     --destructive: 239 68 68; /* #EF4444 */
     --destructive-foreground: 255 255 255; /* #FFFFFF */
-    --border: 229 231 235; /* #E5E7EB */
-    --input: 243 244 246; /* #F3F4F6 */
-    --ring: 59 130 246; /* #3B82F6 */
-    --radius: 0.5rem;
+    --border: 226 232 240; /* #E2E8F0 - светлый сине-серый */
+    --input: 248 250 252; /* #F8FAFC - светлейший синий */
+    --ring: 37 99 235; /* #2563EB - яркий синий */
+    --radius: 12px; /* Более округлые углы для минимализма */
     --sidebar-background: 255 255 255;
-    --sidebar-foreground: 31 41 55;
-    --sidebar-primary: 59 130 246;
+    --sidebar-foreground: 30 58 138;
+    --sidebar-primary: 37 99 235;
     --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 243 244 246;
-    --sidebar-accent-foreground: 31 41 55;
-    --sidebar-border: 229 231 235;
-    --sidebar-ring: 59 130 246;
+    --sidebar-accent: 248 250 252;
+    --sidebar-accent-foreground: 30 58 138;
+    --sidebar-border: 226 232 240;
+    --sidebar-ring: 37 99 235;
   }
 
   .dark {
-    --background: 17 24 39; /* #111827 */
-    --foreground: 249 250 251; /* #F9FAFB */
-    --card: 31 41 55; /* #1F2937 */
-    --card-foreground: 249 250 251; /* #F9FAFB */
-    --popover: 31 41 55; /* #1F2937 */
-    --popover-foreground: 249 250 251; /* #F9FAFB */
-    --primary: 59 130 246; /* #3B82F6 */
-    --primary-foreground: 255 255 255; /* #FFFFFF */
-    --secondary: 55 65 81; /* #374151 */
-    --secondary-foreground: 249 250 251; /* #F9FAFB */
-    --muted: 55 65 81; /* #374151 */
-    --muted-foreground: 156 163 175; /* #9CA3AF */
-    --accent: 55 65 81; /* #374151 */
-    --accent-foreground: 249 250 251; /* #F9FAFB */
+    --background: 15 23 42; /* #0F172A - темно-синий */
+    --foreground: 248 250 252; /* #F8FAFC */
+    --card: 30 41 59; /* #1E293B */
+    --card-foreground: 248 250 252; /* #F8FAFC */
+    --popover: 30 41 59; /* #1E293B */
+    --popover-foreground: 248 250 252; /* #F8FAFC */
+    --primary: 56 189 248; /* #38BDF8 - светлый синий */
+    --primary-foreground: 15 23 42; /* #0F172A */
+    --secondary: 51 65 85; /* #334155 */
+    --secondary-foreground: 248 250 252; /* #F8FAFC */
+    --muted: 30 41 59; /* #1E293B */
+    --muted-foreground: 148 163 184; /* #94A3B8 */
+    --accent: 30 41 59; /* #1E293B */
+    --accent-foreground: 248 250 252; /* #F8FAFC */
     --destructive: 239 68 68; /* #EF4444 */
     --destructive-foreground: 255 255 255; /* #FFFFFF */
-    --border: 55 65 81; /* #374151 */
-    --input: 55 65 81; /* #374151 */
-    --ring: 59 130 246; /* #3B82F6 */
-    --sidebar-background: 31 41 55;
-    --sidebar-foreground: 249 250 251;
-    --sidebar-primary: 59 130 246;
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 55 65 81;
-    --sidebar-accent-foreground: 249 250 251;
-    --sidebar-border: 55 65 81;
-    --sidebar-ring: 59 130 246;
+    --border: 51 65 85; /* #334155 */
+    --input: 30 41 59; /* #1E293B */
+    --ring: 56 189 248; /* #38BDF8 */
+    --sidebar-background: 30 41 59;
+    --sidebar-foreground: 248 250 252;
+    --sidebar-primary: 56 189 248;
+    --sidebar-primary-foreground: 15 23 42;
+    --sidebar-accent: 51 65 85;
+    --sidebar-accent-foreground: 248 250 252;
+    --sidebar-border: 51 65 85;
+    --sidebar-ring: 56 189 248;
   }
 }
 
@@ -72,12 +72,18 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-['Inter',_sans-serif];
+    @apply bg-background text-foreground font-['Inter',_sans-serif] antialiased;
   }
 }
 
+/* Минималистичные стили */
 .video-placeholder {
-  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--accent)) 0%,
+    hsl(var(--muted)) 100%
+  );
+  border: 2px dashed hsl(var(--border));
 }
 
 .recording-indicator {
@@ -90,6 +96,29 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.7;
   }
+}
+
+/* Минималистичные тени и эффекты */
+.minimal-card {
+  box-shadow: 0 1px 3px 0 hsl(var(--primary) / 0.1);
+  border: 1px solid hsl(var(--border));
+}
+
+.minimal-button {
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px 0 hsl(var(--primary) / 0.1);
+}
+
+.minimal-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px 0 hsl(var(--primary) / 0.15);
+}
+
+/* Плавные переходы */
+* {
+  transition:
+    border-color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
 }

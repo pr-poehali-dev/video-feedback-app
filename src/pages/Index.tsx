@@ -23,6 +23,7 @@ const Index = () => {
 
   const startRecording = useCallback(async () => {
     try {
+      console.log('Запрос доступа к камере...');
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment',
@@ -31,39 +32,56 @@ const Index = () => {
         },
         audio: true,
       });
+      console.log('Получен доступ к камере');
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
       }
 
-      // Только MP4 формат для Telegram
-      const mimeType = 'video/mp4;codecs=h264,aac';
+      // Пробуем разные форматы в порядке приоритета
+      const supportedFormats = [
+        'video/mp4;codecs=h264,aac',
+        'video/mp4',
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm',
+        ''  // Default format
+      ];
       
-      if (!MediaRecorder.isTypeSupported(mimeType)) {
-        throw new Error('MP4 формат не поддерживается этим браузером');
+      let selectedFormat = '';
+      console.log('Проверяем поддерживаемые форматы...');
+      for (const format of supportedFormats) {
+        const isSupported = MediaRecorder.isTypeSupported(format);
+        console.log(`Формат "${format}": ${isSupported ? 'поддерживается' : 'не поддерживается'}`);
+        if (isSupported && !selectedFormat) {
+          selectedFormat = format;
+          console.log(`✅ Выбран формат: ${format || 'default'}`);
+        }
       }
-      
-      console.log(`Используется MP4 формат: ${mimeType}`);
 
+      console.log('Создаю MediaRecorder с форматом:', selectedFormat || 'default');
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: mimeType,
+        mimeType: selectedFormat || undefined,
         videoBitsPerSecond: 500000, // 500kbps для стабильной отправки в Telegram
         audioBitsPerSecond: 64000,  // 64kbps для аудио
       });
+      console.log('MediaRecorder создан успешно');
 
       chunksRef.current = [];
 
       mediaRecorder.ondataavailable = (event) => {
+        console.log('Получены данные:', event.data.size, 'байт');
         if (event.data.size > 0) {
           chunksRef.current.push(event.data);
         }
       };
 
       mediaRecorder.onstop = () => {
-        // Определяем тип файла на основе используемого mimeType
-        const fileExtension = mimeType.includes('mp4') ? 'mp4' : 'webm';
-        const blob = new Blob(chunksRef.current, { type: mimeType });
+        console.log('Запись остановлена, всего чанков:', chunksRef.current.length);
+        // Все форматы конвертируем в MP4 на бэкенде
+        const blob = new Blob(chunksRef.current, { type: selectedFormat || 'video/mp4' });
+        console.log('Создан blob размером:', blob.size, 'байт');
         setVideoState(prev => ({ 
           ...prev, 
           recordedBlob: blob, 
@@ -77,7 +95,16 @@ const Index = () => {
         stream.getTracks().forEach(track => track.stop());
       };
 
+      mediaRecorder.onstart = () => {
+        console.log('Запись началась');
+      };
+
+      mediaRecorder.onerror = (event) => {
+        console.error('Ошибка MediaRecorder:', event);
+      };
+
       mediaRecorderRef.current = mediaRecorder;
+      console.log('Запускаю запись...');
       mediaRecorder.start();
 
       setVideoState(prev => ({ 
@@ -88,12 +115,18 @@ const Index = () => {
 
     } catch (error) {
       console.error('Ошибка доступа к камере:', error);
+      // Показываем пользователю понятную ошибку
+      alert('Не удалось получить доступ к камере. Проверьте разрешения в браузере.');
     }
   }, []);
 
   const stopRecording = useCallback(() => {
+    console.log('Попытка остановить запись...');
     if (mediaRecorderRef.current && videoState.isRecording) {
+      console.log('Останавливаю MediaRecorder...');
       mediaRecorderRef.current.stop();
+    } else {
+      console.log('MediaRecorder не активен или запись не ведется');
     }
   }, [videoState.isRecording]);
 
@@ -116,9 +149,8 @@ const Index = () => {
     try {
       const formData = new FormData();
       formData.append('comments', comments);
-      // Определяем расширение файла по MIME-типу
-      const fileExtension = videoState.recordedBlob?.type.includes('mp4') ? 'mp4' : 'webm';
-      formData.append('video', videoState.recordedBlob, `lead-video.${fileExtension}`);
+      // Всегда отправляем как MP4, бэкенд сконвертирует
+      formData.append('video', videoState.recordedBlob, 'lead-video.mp4');
 
       const response = await fetch('https://functions.poehali.dev/dbc5b737-4ec3-4728-8821-efee0a87c56c', {
         method: 'POST',

@@ -85,21 +85,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if video_data and len(video_data) > 100 and comments:
             video_api_url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendVideo'
             
-            # Определяем формат видео по содержимому
-            video_format = 'video/mp4'
-            filename = 'video.mp4'
-            
-            # Проверяем WebM сигнатуру
-            if video_data[:4] == b'\x1a\x45\xdf\xa3':
-                video_format = 'video/webm'
-                filename = 'video.webm'
-            
+            # Только MP4 формат
             files = {
-                'video': (filename, video_data, video_format)
+                'video': ('video.mp4', video_data, 'video/mp4')
             }
             video_form_data = {
                 'chat_id': CHAT_ID,
-                'caption': f"🎬 Новый видео-лид:\n\n{comments}"
+                'caption': comments
             }
             
             video_response = requests.post(video_api_url, files=files, data=video_form_data, timeout=30)
@@ -114,7 +106,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'success': True, 
                     'message': 'Видео с комментарием отправлено в Telegram',
                     'video_sent': video_response.status_code == 200,
-                    'format': video_format
+                    'format': 'mp4'
                 }),
                 'isBase64Encoded': False
             }
@@ -123,7 +115,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             telegram_api_url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
             message_data = {
                 'chat_id': CHAT_ID,
-                'text': f"🎬 Новый лид (только текст):\n\n{comments}"
+                'text': comments
             }
             
             message_response = requests.post(telegram_api_url, json=message_data, timeout=10)

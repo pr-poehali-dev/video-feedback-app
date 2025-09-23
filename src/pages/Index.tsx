@@ -7,86 +7,18 @@ interface VideoRecordingState {
   stream: MediaStream | null;
 }
 
-interface SnakeSegment {
-  x: number;
-  y: number;
-}
-
-const SnakeGame = () => {
-  const [snake, setSnake] = useState<SnakeSegment[]>([{ x: 5, y: 5 }]);
-  const [direction, setDirection] = useState({ x: 1, y: 0 });
-  
-  useEffect(() => {
-    const moveSnake = () => {
-      setSnake(prev => {
-        const newSnake = [...prev];
-        const head = { ...newSnake[0] };
-        
-        head.x += direction.x;
-        head.y += direction.y;
-        
-        // Граница поля 10x6
-        if (head.x >= 10) head.x = 0;
-        if (head.x < 0) head.x = 9;
-        if (head.y >= 6) head.y = 0;
-        if (head.y < 0) head.y = 5;
-        
-        newSnake.unshift(head);
-        
-        // Ограничиваем длину змейки
-        if (newSnake.length > 4) {
-          newSnake.pop();
-        }
-        
-        return newSnake;
-      });
-    };
-
-    const gameInterval = setInterval(moveSnake, 300);
-    
-    // Меняем направление каждые 2 секунды
-    const directionInterval = setInterval(() => {
-      setDirection(prev => {
-        const directions = [
-          { x: 1, y: 0 },  // вправо
-          { x: 0, y: 1 },  // вниз
-          { x: -1, y: 0 }, // влево
-          { x: 0, y: -1 }  // вверх
-        ];
-        const currentIndex = directions.findIndex(d => d.x === prev.x && d.y === prev.y);
-        const nextIndex = (currentIndex + 1) % directions.length;
-        return directions[nextIndex];
-      });
-    }, 2000);
-
-    return () => {
-      clearInterval(gameInterval);
-      clearInterval(directionInterval);
-    };
-  }, [direction]);
-
+const YoyoToy = () => {
   return (
-    <div className="w-32 h-20 bg-black rounded border border-green-400 mx-auto mb-2 p-1">
-      <div className="grid grid-cols-10 gap-px h-full">
-        {Array.from({ length: 60 }).map((_, index) => {
-          const x = index % 10;
-          const y = Math.floor(index / 10);
-          const isSnake = snake.some(segment => segment.x === x && segment.y === y);
-          const isHead = snake[0]?.x === x && snake[0]?.y === y;
-          
-          return (
-            <div
-              key={index}
-              className={`w-full h-full ${
-                isSnake 
-                  ? isHead 
-                    ? 'bg-green-300' 
-                    : 'bg-green-500'
-                  : 'bg-black'
-              }`}
-            />
-          );
-        })}
+    <div className="relative w-16 h-16 mx-auto mb-2">
+      {/* Нитка йо-йо */}
+      <div className="absolute left-1/2 top-0 w-0.5 h-12 bg-gray-400 transform -translate-x-1/2 animate-pulse"></div>
+      
+      {/* Йо-йо шарик */}
+      <div className="absolute left-1/2 bottom-0 w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full transform -translate-x-1/2 animate-bounce shadow-lg">
+        {/* Блик на йо-йо */}
+        <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-60"></div>
+        {/* Центральная ось */}
+        <div className="absolute top-1/2 left-1/2 w-3 h-1 bg-gray-300 rounded transform -translate-x-1/2 -translate-y-1/2"></div>
       </div>
     </div>
   );
@@ -295,7 +227,7 @@ const Index = () => {
         
         <div className="text-center mb-12">
           <h1 className="text-3xl font-medium text-gray-900 mb-4">
-            Видео Лид
+            Создайте Лид
           </h1>
         </div>
 
@@ -343,8 +275,8 @@ const Index = () => {
                     
                     {videoState.isRecording && (
                       <>
-                        <SnakeGame />
-                        <p className="text-green-500 font-medium font-mono text-sm">IMPERIA PROMO</p>
+                        <YoyoToy />
+                        <p className="text-blue-600 font-medium">IMPERIA PROMO</p>
                       </>
                     )}
                     

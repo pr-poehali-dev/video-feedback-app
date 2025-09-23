@@ -33,24 +33,33 @@
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground font-['Inter',_sans-serif] antialiased;
-    background-color: hsl(248 250 252) !important;
+  html {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
   }
 
-  html {
-    background-color: hsl(248 250 252) !important;
+  body {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
+    color: #1e3a8a !important;
+    font-family: "Inter", sans-serif !important;
+  }
+
+  #root {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
+  }
+
+  .min-h-screen {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
   }
 }
 
 /* Минималистичные стили */
 .video-placeholder {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--accent)) 0%,
-    hsl(var(--muted)) 100%
-  );
-  border: 2px dashed hsl(var(--border));
+  background: linear-gradient(135deg, #dbeafe 0%, #f1f5f9 100%) !important;
+  border: 2px dashed #e2e8f0;
 }
 
 .recording-indicator {
@@ -69,19 +78,19 @@
 
 /* Минималистичные тени и эффекты */
 .minimal-card {
-  box-shadow: 0 1px 3px 0 hsl(var(--primary) / 0.1);
-  border: 1px solid hsl(var(--border));
-  background-color: hsl(var(--card)) !important;
+  box-shadow: 0 1px 3px 0 rgba(37, 99, 235, 0.1);
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff !important;
 }
 
 .minimal-button {
   transition: all 0.2s ease-in-out;
-  box-shadow: 0 1px 2px 0 hsl(var(--primary) / 0.1);
+  box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.1);
 }
 
 .minimal-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px 0 hsl(var(--primary) / 0.15);
+  box-shadow: 0 4px 12px 0 rgba(37, 99, 235, 0.15);
 }
 
 /* Плавные переходы */

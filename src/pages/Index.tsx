@@ -259,7 +259,7 @@ const Index = () => {
                     {videoState.isRecording && (
                       <>
                         <div className="w-4 h-4 bg-red-500 rounded-full mx-auto mb-2 animate-pulse"></div>
-                        <p className="text-red-600 font-medium">Идет запись...</p>
+                        <p className="text-red-600 font-medium">IMPERIA PROMO</p>
                       </>
                     )}
                     

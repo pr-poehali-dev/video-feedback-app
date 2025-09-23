@@ -259,7 +259,7 @@ const Index = () => {
                     )}
                     
                     {videoState.isRecording && (
-                      <p className="text-blue-500 font-medium">IMPERIA promo</p>
+                      <p className="text-black font-medium">IMPERIA PROMO</p>
                     )}
                     
                     {videoState.recordedBlob && !videoState.isRecording && (

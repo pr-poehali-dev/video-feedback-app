@@ -7,6 +7,12 @@ interface VideoRecordingState {
   stream: MediaStream | null;
 }
 
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+}
+
 
 
 const Index = () => {
@@ -18,6 +24,7 @@ const Index = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [location, setLocation] = useState<LocationData | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -25,6 +32,30 @@ const Index = () => {
 
   const startRecording = useCallback(async () => {
     try {
+      // Запрашиваем местоположение
+      console.log('Запрос местоположения...');
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 60000
+          });
+        });
+        
+        const locationData: LocationData = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        };
+        
+        setLocation(locationData);
+        console.log('Местоположение получено:', locationData);
+      } catch (locationError) {
+        console.warn('Не удалось получить местоположение:', locationError);
+        // Продолжаем без местоположения
+      }
+
       console.log('Запрос доступа к камере...');
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -153,6 +184,12 @@ const Index = () => {
       formData.append('comments', comments);
       // Всегда отправляем как MP4, бэкенд сконвертирует
       formData.append('video', videoState.recordedBlob, 'lead-video.mp4');
+      
+      // Добавляем местоположение если есть
+      if (location) {
+        formData.append('location', JSON.stringify(location));
+        console.log('Отправляю местоположение:', location);
+      }
 
       const response = await fetch('https://functions.poehali.dev/dbc5b737-4ec3-4728-8821-efee0a87c56c', {
         method: 'POST',
@@ -182,6 +219,7 @@ const Index = () => {
       stream: null,
     });
     setIsSuccess(false);
+    setLocation(null);
     chunksRef.current = [];
   }, []);
 

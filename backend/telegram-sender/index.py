@@ -55,6 +55,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         comments = ''
         video_data = None
+        location_data = None
         
         if 'multipart/form-data' in content_type:
             # Извлекаем boundary
@@ -80,6 +81,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             content_start = part.find(b'\r\n\r\n')
                             if content_start != -1:
                                 video_data = part[content_start + 4:]
+                        
+                        # Ищем name="location"
+                        elif b'name="location"' in part:
+                            # Извлекаем данные местоположения
+                            content_start = part.find(b'\r\n\r\n')
+                            if content_start != -1:
+                                try:
+                                    location_json = part[content_start + 4:].decode('utf-8').strip()
+                                    location_data = json.loads(location_json)
+                                except (json.JSONDecodeError, UnicodeDecodeError):
+                                    location_data = None
         
         # Отправляем видео с комментарием в одном сообщении
         if video_data and len(video_data) > 100 and comments:
@@ -89,9 +101,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             files = {
                 'video': ('video.mp4', video_data, 'video/mp4')
             }
+            # Формируем caption с местоположением
+            caption = comments
+            if location_data:
+                lat = location_data.get('latitude')
+                lon = location_data.get('longitude')
+                if lat is not None and lon is not None:
+                    caption += f"\n\n📍 Местоположение: {lat:.6f}, {lon:.6f}"
+                    if 'accuracy' in location_data:
+                        caption += f" (точность: {location_data['accuracy']:.0f}м)"
+            
             video_form_data = {
                 'chat_id': CHAT_ID,
-                'caption': comments
+                'caption': caption
             }
             
             video_response = requests.post(video_api_url, files=files, data=video_form_data, timeout=30)
@@ -113,9 +135,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         elif comments and not video_data:
             # Если только комментарий без видео
             telegram_api_url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+            
+            # Формируем текст с местоположением
+            text = comments
+            if location_data:
+                lat = location_data.get('latitude')
+                lon = location_data.get('longitude')
+                if lat is not None and lon is not None:
+                    text += f"\n\n📍 Местоположение: {lat:.6f}, {lon:.6f}"
+                    if 'accuracy' in location_data:
+                        text += f" (точность: {location_data['accuracy']:.0f}м)"
+            
             message_data = {
                 'chat_id': CHAT_ID,
-                'text': comments
+                'text': text
             }
             
             message_response = requests.post(telegram_api_url, json=message_data, timeout=10)

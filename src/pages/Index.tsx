@@ -37,14 +37,22 @@ const Index = () => {
         videoRef.current.play();
       }
 
-      // Проверяем поддерживаемые форматы для Telegram
+      // Приоритет MP4 для Telegram
       let mimeType = 'video/mp4;codecs=h264,aac';
+      let supportedType = 'mp4';
+      
       if (!MediaRecorder.isTypeSupported(mimeType)) {
+        // Fallback на WebM только если MP4 не поддерживается
         mimeType = 'video/webm;codecs=vp8,opus';
+        supportedType = 'webm';
+        
         if (!MediaRecorder.isTypeSupported(mimeType)) {
           mimeType = 'video/webm';
+          supportedType = 'webm';
         }
       }
+      
+      console.log(`Используется формат: ${supportedType} (${mimeType})`);
 
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: mimeType,

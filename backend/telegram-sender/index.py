@@ -81,62 +81,67 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             if content_start != -1:
                                 video_data = part[content_start + 4:]
         
-        # Отправляем сообщение в Telegram
-        if comments:
-            message_text = f"🎬 Новый видео-лид:\n\n{comments}"
+        # Отправляем видео с комментарием в одном сообщении
+        if video_data and len(video_data) > 100 and comments:
+            video_api_url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendVideo'
             
+            # Определяем формат видео по содержимому
+            video_format = 'video/mp4'
+            filename = 'video.mp4'
+            
+            # Проверяем WebM сигнатуру
+            if video_data[:4] == b'\x1a\x45\xdf\xa3':
+                video_format = 'video/webm'
+                filename = 'video.webm'
+            
+            files = {
+                'video': (filename, video_data, video_format)
+            }
+            video_form_data = {
+                'chat_id': CHAT_ID,
+                'caption': f"🎬 Новый видео-лид:\n\n{comments}"
+            }
+            
+            video_response = requests.post(video_api_url, files=files, data=video_form_data, timeout=30)
+                
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True, 
+                    'message': 'Видео с комментарием отправлено в Telegram',
+                    'video_sent': video_response.status_code == 200,
+                    'format': video_format
+                }),
+                'isBase64Encoded': False
+            }
+        elif comments and not video_data:
+            # Если только комментарий без видео
             telegram_api_url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
             message_data = {
                 'chat_id': CHAT_ID,
-                'text': message_text
+                'text': f"🎬 Новый лид (только текст):\n\n{comments}"
             }
             
             message_response = requests.post(telegram_api_url, json=message_data, timeout=10)
             
-            # Отправляем видео если есть
-            if video_data and len(video_data) > 100:  # Проверяем что есть реальные данные
-                video_api_url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendVideo'
-                
-                files = {
-                    'video': ('video.webm', video_data, 'video/webm')
-                }
-                video_form_data = {
-                    'chat_id': CHAT_ID,
-                    'caption': 'Видео к заявке'
-                }
-                
-                video_response = requests.post(video_api_url, files=files, data=video_form_data, timeout=30)
-                
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': json.dumps({
-                        'success': True, 
-                        'message': 'Отправлено в Telegram',
-                        'comment_sent': message_response.status_code == 200,
-                        'video_sent': video_response.status_code == 200
-                    }),
-                    'isBase64Encoded': False
-                }
-            else:
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': json.dumps({
-                        'success': True, 
-                        'message': 'Комментарий отправлен в Telegram',
-                        'comment_sent': message_response.status_code == 200,
-                        'video_sent': False,
-                        'video_size': len(video_data) if video_data else 0
-                    }),
-                    'isBase64Encoded': False
-                }
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'success': True, 
+                    'message': 'Комментарий отправлен в Telegram',
+                    'comment_sent': message_response.status_code == 200,
+                    'video_sent': False
+                }),
+                'isBase64Encoded': False
+            }
         else:
             return {
                 'statusCode': 400,

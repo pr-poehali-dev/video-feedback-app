@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface VideoRecordingState {
@@ -6,6 +6,91 @@ interface VideoRecordingState {
   recordedBlob: Blob | null;
   stream: MediaStream | null;
 }
+
+interface SnakeSegment {
+  x: number;
+  y: number;
+}
+
+const SnakeGame = () => {
+  const [snake, setSnake] = useState<SnakeSegment[]>([{ x: 5, y: 5 }]);
+  const [direction, setDirection] = useState({ x: 1, y: 0 });
+  
+  useEffect(() => {
+    const moveSnake = () => {
+      setSnake(prev => {
+        const newSnake = [...prev];
+        const head = { ...newSnake[0] };
+        
+        head.x += direction.x;
+        head.y += direction.y;
+        
+        // Граница поля 10x6
+        if (head.x >= 10) head.x = 0;
+        if (head.x < 0) head.x = 9;
+        if (head.y >= 6) head.y = 0;
+        if (head.y < 0) head.y = 5;
+        
+        newSnake.unshift(head);
+        
+        // Ограничиваем длину змейки
+        if (newSnake.length > 4) {
+          newSnake.pop();
+        }
+        
+        return newSnake;
+      });
+    };
+
+    const gameInterval = setInterval(moveSnake, 300);
+    
+    // Меняем направление каждые 2 секунды
+    const directionInterval = setInterval(() => {
+      setDirection(prev => {
+        const directions = [
+          { x: 1, y: 0 },  // вправо
+          { x: 0, y: 1 },  // вниз
+          { x: -1, y: 0 }, // влево
+          { x: 0, y: -1 }  // вверх
+        ];
+        const currentIndex = directions.findIndex(d => d.x === prev.x && d.y === prev.y);
+        const nextIndex = (currentIndex + 1) % directions.length;
+        return directions[nextIndex];
+      });
+    }, 2000);
+
+    return () => {
+      clearInterval(gameInterval);
+      clearInterval(directionInterval);
+    };
+  }, [direction]);
+
+  return (
+    <div className="w-32 h-20 bg-black rounded border border-green-400 mx-auto mb-2 p-1">
+      <div className="grid grid-cols-10 gap-px h-full">
+        {Array.from({ length: 60 }).map((_, index) => {
+          const x = index % 10;
+          const y = Math.floor(index / 10);
+          const isSnake = snake.some(segment => segment.x === x && segment.y === y);
+          const isHead = snake[0]?.x === x && snake[0]?.y === y;
+          
+          return (
+            <div
+              key={index}
+              className={`w-full h-full ${
+                isSnake 
+                  ? isHead 
+                    ? 'bg-green-300' 
+                    : 'bg-green-500'
+                  : 'bg-black'
+              }`}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 const Index = () => {
   const [comments, setComments] = useState('');
@@ -258,11 +343,8 @@ const Index = () => {
                     
                     {videoState.isRecording && (
                       <>
-                        <div className="relative w-8 h-8 mx-auto mb-2">
-                          <div className="absolute inset-0 bg-red-500 rounded-full animate-ping"></div>
-                          <div className="relative w-8 h-8 bg-red-600 rounded-full"></div>
-                        </div>
-                        <p className="text-red-600 font-medium">IMPERIA PROMO</p>
+                        <SnakeGame />
+                        <p className="text-green-500 font-medium font-mono text-sm">IMPERIA PROMO</p>
                       </>
                     )}
                     

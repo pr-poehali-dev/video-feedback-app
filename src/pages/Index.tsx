@@ -7,22 +7,7 @@ interface VideoRecordingState {
   stream: MediaStream | null;
 }
 
-const YoyoToy = () => {
-  return (
-    <div className="relative w-16 h-16 mx-auto mb-2">
-      {/* Нитка йо-йо */}
-      <div className="absolute left-1/2 top-0 w-0.5 h-12 bg-gray-400 transform -translate-x-1/2 animate-pulse"></div>
-      
-      {/* Йо-йо шарик */}
-      <div className="absolute left-1/2 bottom-0 w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full transform -translate-x-1/2 animate-bounce shadow-lg">
-        {/* Блик на йо-йо */}
-        <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-60"></div>
-        {/* Центральная ось */}
-        <div className="absolute top-1/2 left-1/2 w-3 h-1 bg-gray-300 rounded transform -translate-x-1/2 -translate-y-1/2"></div>
-      </div>
-    </div>
-  );
-};
+
 
 const Index = () => {
   const [comments, setComments] = useState('');
@@ -274,10 +259,7 @@ const Index = () => {
                     )}
                     
                     {videoState.isRecording && (
-                      <>
-                        <YoyoToy />
-                        <p className="text-blue-600 font-medium">IMPERIA PROMO</p>
-                      </>
+                      <p className="text-blue-500 font-medium">IMPERIA PROMO</p>
                     )}
                     
                     {videoState.recordedBlob && !videoState.isRecording && (

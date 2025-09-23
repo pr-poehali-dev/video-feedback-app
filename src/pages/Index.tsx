@@ -173,10 +173,10 @@ const Index = () => {
               <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                 <Icon name="CheckCircle" size={40} className="text-white" />
               </div>
-              <h2 className="text-2xl font-light text-foreground mb-3">
+              <h2 className="text-2xl font-semibold mb-3" style={{color: '#1E3A8A'}}>
                 Отправлено успешно
               </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed" style={{color: '#64748B'}}>
                 Ваш лид получен и обрабатывается
               </p>
             </div>
@@ -198,10 +198,10 @@ const Index = () => {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-5xl mx-auto">
         <header className="text-center mb-12 pt-12">
-          <h1 className="text-4xl font-light text-foreground mb-4 tracking-tight">
+          <h1 className="text-4xl font-bold mb-4 tracking-tight" style={{color: '#1E3A8A'}}>
             Видео Лид
           </h1>
-          <p className="text-muted-foreground text-lg font-light max-w-xl mx-auto">
+          <p className="text-lg font-medium max-w-xl mx-auto" style={{color: '#64748B'}}>
             Оставьте комментарий и запишите короткое видео
           </p>
         </header>
@@ -210,7 +210,7 @@ const Index = () => {
           {/* Блок анкеты */}
           <Card className="minimal-card border-0 shadow-md">
             <CardHeader className="pb-6">
-              <CardTitle className="flex items-center text-lg font-medium text-foreground">
+              <CardTitle className="flex items-center text-lg font-semibold" style={{color: '#1E3A8A'}}>
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
                   <Icon name="MessageSquare" className="w-4 h-4 text-white" />
                 </div>
@@ -219,7 +219,7 @@ const Index = () => {
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-4">
-                <Label htmlFor="comments" className="text-sm font-medium text-muted-foreground">
+                <Label htmlFor="comments" className="text-sm font-medium" style={{color: '#64748B'}}>
                   Опишите ваш запрос или вопрос
                 </Label>
                 <Textarea
@@ -230,7 +230,7 @@ const Index = () => {
                   className="min-h-[140px] resize-none border-0 bg-muted/50 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all"
                   maxLength={500}
                 />
-                <div className="text-xs text-muted-foreground flex justify-between">
+                <div className="text-xs flex justify-between" style={{color: '#64748B'}}>
                   <span>Максимум 500 символов</span>
                   <span className={comments.length > 450 ? 'text-orange-500' : ''}>{comments.length}/500</span>
                 </div>
@@ -241,7 +241,7 @@ const Index = () => {
           {/* Блок видеозаписи */}
           <Card className="minimal-card border-0 shadow-md">
             <CardHeader className="pb-6">
-              <CardTitle className="flex items-center text-lg font-medium text-foreground">
+              <CardTitle className="flex items-center text-lg font-semibold" style={{color: '#1E3A8A'}}>
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
                   <Icon name="Video" className="w-4 h-4 text-white" />
                 </div>
@@ -271,7 +271,7 @@ const Index = () => {
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                           <Icon name="Camera" size={32} className="text-primary opacity-70" />
                         </div>
-                        <p className="text-sm text-muted-foreground font-medium">Готово к записи</p>
+                        <p className="text-sm font-medium" style={{color: '#64748B'}}>Готово к записи</p>
                       </div>
                     </div>
                   )}
@@ -325,7 +325,7 @@ const Index = () => {
                   )}
                 </div>
 
-                <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 space-y-1">
+                <div className="text-xs rounded-lg p-3 space-y-1" style={{color: '#64748B', backgroundColor: '#F1F5F9'}}>
                   <p>• HD качество 360p для быстрой отправки</p>
                   <p>• Автоматический выбор основной камеры</p>
                   <p>• Оптимизировано для всех устройств</p>
@@ -357,7 +357,7 @@ const Index = () => {
           </Button>
           
           {(!comments.trim() || !videoState.recordedBlob) && (
-            <p className="text-sm text-muted-foreground mt-4">
+            <p className="text-sm mt-4" style={{color: '#64748B'}}>
               {!comments.trim() && !videoState.recordedBlob 
                 ? 'Добавьте комментарий и запишите видео' 
                 : !comments.trim() 

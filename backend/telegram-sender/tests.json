@@ -1,0 +1,13 @@
+{
+  "tests": [
+    {
+      "name": "Test POST request",
+      "method": "POST",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": "boolean"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

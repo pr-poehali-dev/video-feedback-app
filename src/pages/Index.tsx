@@ -37,8 +37,19 @@ const Index = () => {
         videoRef.current.play();
       }
 
+      // Проверяем поддерживаемые форматы для Telegram
+      let mimeType = 'video/mp4;codecs=h264,aac';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/webm;codecs=vp8,opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm';
+        }
+      }
+
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp8,opus',
+        mimeType: mimeType,
+        videoBitsPerSecond: 500000, // 500kbps для стабильной отправки в Telegram
+        audioBitsPerSecond: 64000,  // 64kbps для аудио
       });
 
       chunksRef.current = [];
@@ -50,7 +61,9 @@ const Index = () => {
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+        // Определяем тип файла на основе используемого mimeType
+        const fileExtension = mimeType.includes('mp4') ? 'mp4' : 'webm';
+        const blob = new Blob(chunksRef.current, { type: mimeType });
         setVideoState(prev => ({ 
           ...prev, 
           recordedBlob: blob, 
@@ -103,9 +116,11 @@ const Index = () => {
     try {
       const formData = new FormData();
       formData.append('comments', comments);
-      formData.append('video', videoState.recordedBlob, 'lead-video.webm');
+      // Определяем расширение файла по MIME-типу
+      const fileExtension = videoState.recordedBlob?.type.includes('mp4') ? 'mp4' : 'webm';
+      formData.append('video', videoState.recordedBlob, `lead-video.${fileExtension}`);
 
-      const response = await fetch('https://functions.poehali.dev/56850dbd-ea0f-428f-b6e0-1814383f74c6', {
+      const response = await fetch('https://functions.poehali.dev/dbc5b737-4ec3-4728-8821-efee0a87c56c', {
         method: 'POST',
         body: formData,
       });

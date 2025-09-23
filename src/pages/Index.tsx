@@ -259,7 +259,7 @@ const Index = () => {
                     )}
                     
                     {videoState.isRecording && (
-                      <p className="text-blue-500 font-medium">IMPERIA PROMO</p>
+                      <p className="text-blue-500 font-medium">IMPERIA promo</p>
                     )}
                     
                     {videoState.recordedBlob && !videoState.isRecording && (
@@ -285,7 +285,7 @@ const Index = () => {
                 {videoState.isRecording && (
                   <button 
                     onClick={stopRecording}
-                    className="w-full bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition-colors"
+                    className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors"
                   >
                     Остановить
                   </button>

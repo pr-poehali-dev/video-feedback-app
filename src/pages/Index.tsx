@@ -126,7 +126,12 @@ const Index = () => {
       });
 
       if (response.ok) {
+        const result = await response.json();
+        console.log('Ответ сервера:', result);
         setIsSuccess(true);
+      } else {
+        const error = await response.json();
+        console.error('Ошибка отправки:', error);
       }
     } catch (error) {
       console.error('Ошибка отправки:', error);

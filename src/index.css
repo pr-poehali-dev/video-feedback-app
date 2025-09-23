@@ -16,54 +16,16 @@
     --primary-foreground: 255 255 255; /* #FFFFFF */
     --secondary: 241 245 249; /* #F1F5F9 - очень светлый синий */
     --secondary-foreground: 30 58 138; /* #1E3A8A */
-    --muted: 248 250 252; /* #F8FAFC - светлейший синий */
+    --muted: 241 245 249; /* #F1F5F9 - светлый синий */
     --muted-foreground: 100 116 139; /* #64748B - средний сине-серый */
     --accent: 219 234 254; /* #DBEAFE - светлый голубой */
     --accent-foreground: 30 58 138; /* #1E3A8A */
     --destructive: 239 68 68; /* #EF4444 */
     --destructive-foreground: 255 255 255; /* #FFFFFF */
     --border: 226 232 240; /* #E2E8F0 - светлый сине-серый */
-    --input: 248 250 252; /* #F8FAFC - светлейший синий */
+    --input: 255 255 255; /* #FFFFFF - белый для инпутов */
     --ring: 37 99 235; /* #2563EB - яркий синий */
     --radius: 12px; /* Более округлые углы для минимализма */
-    --sidebar-background: 255 255 255;
-    --sidebar-foreground: 30 58 138;
-    --sidebar-primary: 37 99 235;
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 248 250 252;
-    --sidebar-accent-foreground: 30 58 138;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 37 99 235;
-  }
-
-  .dark {
-    --background: 15 23 42; /* #0F172A - темно-синий */
-    --foreground: 248 250 252; /* #F8FAFC */
-    --card: 30 41 59; /* #1E293B */
-    --card-foreground: 248 250 252; /* #F8FAFC */
-    --popover: 30 41 59; /* #1E293B */
-    --popover-foreground: 248 250 252; /* #F8FAFC */
-    --primary: 56 189 248; /* #38BDF8 - светлый синий */
-    --primary-foreground: 15 23 42; /* #0F172A */
-    --secondary: 51 65 85; /* #334155 */
-    --secondary-foreground: 248 250 252; /* #F8FAFC */
-    --muted: 30 41 59; /* #1E293B */
-    --muted-foreground: 148 163 184; /* #94A3B8 */
-    --accent: 30 41 59; /* #1E293B */
-    --accent-foreground: 248 250 252; /* #F8FAFC */
-    --destructive: 239 68 68; /* #EF4444 */
-    --destructive-foreground: 255 255 255; /* #FFFFFF */
-    --border: 51 65 85; /* #334155 */
-    --input: 30 41 59; /* #1E293B */
-    --ring: 56 189 248; /* #38BDF8 */
-    --sidebar-background: 30 41 59;
-    --sidebar-foreground: 248 250 252;
-    --sidebar-primary: 56 189 248;
-    --sidebar-primary-foreground: 15 23 42;
-    --sidebar-accent: 51 65 85;
-    --sidebar-accent-foreground: 248 250 252;
-    --sidebar-border: 51 65 85;
-    --sidebar-ring: 56 189 248;
   }
 }
 
@@ -73,6 +35,11 @@
   }
   body {
     @apply bg-background text-foreground font-['Inter',_sans-serif] antialiased;
+    background-color: hsl(248 250 252) !important;
+  }
+
+  html {
+    background-color: hsl(248 250 252) !important;
   }
 }
 
@@ -104,6 +71,7 @@
 .minimal-card {
   box-shadow: 0 1px 3px 0 hsl(var(--primary) / 0.1);
   border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card)) !important;
 }
 
 .minimal-button {

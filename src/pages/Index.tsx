@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
+import { Progress } from '@/components/ui/progress';
 
 interface VideoRecordingState {
   isRecording: boolean;
@@ -23,6 +24,7 @@ const Index = () => {
     stream: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [location, setLocation] = useState<LocationData | null>(null);
   
@@ -178,28 +180,42 @@ const Index = () => {
     }
 
     setIsSubmitting(true);
+    setUploadProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('comments', comments);
-      // Всегда отправляем как MP4, бэкенд сконвертирует
       formData.append('video', videoState.recordedBlob, 'lead-video.mp4');
       
-      // Добавляем местоположение если есть
       if (location) {
         formData.append('location', JSON.stringify(location));
         console.log('Отправляю местоположение:', location);
       }
+
+      // Симуляция прогресса загрузки
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) return prev;
+          return prev + Math.random() * 15;
+        });
+      }, 200);
 
       const response = await fetch('https://functions.poehali.dev/dbc5b737-4ec3-4728-8821-efee0a87c56c', {
         method: 'POST',
         body: formData,
       });
 
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
       if (response.ok) {
         const result = await response.json();
         console.log('Ответ сервера:', result);
-        setIsSuccess(true);
+        
+        // Небольшая задержка для показа 100%
+        setTimeout(() => {
+          setIsSuccess(true);
+        }, 500);
       } else {
         const error = await response.json();
         console.error('Ошибка отправки:', error);
@@ -207,9 +223,12 @@ const Index = () => {
     } catch (error) {
       console.error('Ошибка отправки:', error);
     } finally {
-      setIsSubmitting(false);
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setUploadProgress(0);
+      }, 500);
     }
-  }, [comments, videoState.recordedBlob]);
+  }, [comments, videoState.recordedBlob, location]);
 
   const createNewLead = useCallback(() => {
     setComments('');
@@ -219,6 +238,7 @@ const Index = () => {
       stream: null,
     });
     setIsSuccess(false);
+    setUploadProgress(0);
     setLocation(null);
     chunksRef.current = [];
   }, []);
@@ -348,17 +368,44 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center space-y-4">
+          {isSubmitting && (
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Загрузка видео</span>
+                <span className="text-sm font-medium text-blue-600">{Math.round(uploadProgress)}%</span>
+              </div>
+              <Progress 
+                value={uploadProgress} 
+                className="h-2"
+              />
+              <div className="mt-2 text-xs text-gray-500">
+                {uploadProgress < 30 && "Подготовка видео..."}
+                {uploadProgress >= 30 && uploadProgress < 60 && "Сжатие файла..."}
+                {uploadProgress >= 60 && uploadProgress < 90 && "Отправка в Telegram..."}
+                {uploadProgress >= 90 && uploadProgress < 100 && "Почти готово..."}
+                {uploadProgress >= 100 && "Готово!"}
+              </div>
+            </div>
+          )}
+          
           <button 
             onClick={submitLead}
             disabled={!comments.trim() || !videoState.recordedBlob || isSubmitting}
-            className={`px-8 py-4 rounded-lg font-medium transition-colors ${
+            className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 ${
               (!comments.trim() || !videoState.recordedBlob || isSubmitting) 
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                : 'bg-blue-500 text-white hover:bg-blue-600'
+                : 'bg-blue-500 text-white hover:bg-blue-600 hover:scale-105'
             }`}
           >
-            {isSubmitting ? 'Отправляем...' : 'Отправить'}
+            {isSubmitting ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Отправляем...</span>
+              </div>
+            ) : (
+              'Отправить'
+            )}
           </button>
         </div>
       </div>

@@ -88,44 +88,48 @@ const Index = () => {
     setUploadProgress(0);
 
     try {
-      // Симуляция прогресса сохранения
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) return prev;
-          return prev + Math.random() * 20;
-        });
-      }, 150);
+      // Конвертируем blob в base64 для отправки на сервер
+      const videoBase64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(videoState.recordedBlob!);
+      });
 
-      // Создаем объект видео для сохранения
-      const videoData = {
-        id: Date.now(),
+      // Данные для отправки на сервер
+      const leadData = {
         filename: `lead-video-${Date.now()}.mp4`,
         original_filename: `video-${new Date().toLocaleDateString('ru-RU')}.mp4`,
         comments: comments,
-        created_at: new Date().toISOString(),
-        user_id: user?.id || 0,
-        location: location,
-        // Конвертируем blob в base64 для хранения в localStorage
-        videoBase64: await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.readAsDataURL(videoState.recordedBlob!);
-        })
+        videoBase64: videoBase64,
+        latitude: location?.latitude,
+        longitude: location?.longitude
       };
 
-      // Получаем существующие видео пользователя
-      const existingVideos = JSON.parse(localStorage.getItem(`user_videos_${user?.id}`) || '[]');
+      setUploadProgress(30);
+
+      // Отправляем данные на сервер
+      const response = await fetch('https://functions.poehali.dev/ad81c32f-6f6d-4eca-9841-da0f99740909', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': String(user?.id || 1)
+        },
+        body: JSON.stringify(leadData)
+      });
+
+      setUploadProgress(70);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка сохранения на сервере');
+      }
+
+      const result = await response.json();
+      console.log('Лид сохранен на сервере:', result);
       
-      // Добавляем новое видео
-      existingVideos.unshift(videoData); // Добавляем в начало массива (новые сверху)
-      
-      // Сохраняем обновленный список
-      localStorage.setItem(`user_videos_${user?.id}`, JSON.stringify(existingVideos));
-      
-      clearInterval(progressInterval);
       setUploadProgress(100);
 
-      console.log('Видео сохранено в личном кабинете');
+      console.log('Лид успешно сохранен на сервере');
       
       // Небольшая задержка для показа 100%
       setTimeout(() => {
@@ -133,12 +137,13 @@ const Index = () => {
       }, 500);
       
     } catch (error) {
-      console.error('Ошибка сохранения:', error);
+      console.error('Ошибка сохранения лида:', error);
+      alert('Не удалось сохранить лид. Попробуйте еще раз.');
     } finally {
       setTimeout(() => {
         setIsSubmitting(false);
         setUploadProgress(0);
-      }, 500);
+      }, 1500);
     }
   }, [comments, videoState.recordedBlob, location, user]);
 

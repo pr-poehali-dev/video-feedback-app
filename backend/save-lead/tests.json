@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "Test OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test save lead with valid data",
+      "method": "POST",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "123"
+      },
+      "body": {
+        "videoBase64": "data:video/mp4;base64,UklGRnwBAABXRUJQVlA4IG==",
+        "filename": "test-video.mp4",
+        "original_filename": "original-test.mp4",
+        "comments": "Test comment",
+        "latitude": 55.7558,
+        "longitude": 37.6176
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "lead_id": "number",
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Icon from '@/components/ui/icon';
+import VideoViewer from '@/components/VideoViewer';
 
 interface User {
   id: number;
@@ -16,7 +17,10 @@ interface Video {
   original_filename?: string;
   comments: string;
   created_at: string;
-  telegram_sent: boolean;
+  file_size?: number;
+  latitude?: number;
+  longitude?: number;
+  videoBase64?: string;
 }
 
 interface DashboardProps {
@@ -29,6 +33,7 @@ interface DashboardProps {
 const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -37,20 +42,40 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
 
   const fetchUserVideos = async () => {
     try {
-      // Загружаем видео из localStorage вместо API
-      const savedVideos = localStorage.getItem(`user_videos_${user.id}`);
-      if (savedVideos) {
-        const parsedVideos = JSON.parse(savedVideos);
-        setVideos(parsedVideos);
-      } else {
-        setVideos([]);
+      // Загружаем видео с сервера
+      const response = await fetch('https://functions.poehali.dev/e345983f-3726-484e-b8ae-2061c433834e', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': String(user.id)
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка загрузки данных');
       }
+
+      const data = await response.json();
+      setVideos(data.leads || []);
     } catch (error) {
+      console.error('Ошибка загрузки лидов:', error);
       toast({
         title: "Ошибка",
-        description: "Не удалось загрузить видео",
+        description: "Не удалось загрузить видео с сервера",
         variant: "destructive"
       });
+      // Фолбэк к localStorage
+      try {
+        const savedVideos = localStorage.getItem(`user_videos_${user.id}`);
+        if (savedVideos) {
+          const parsedVideos = JSON.parse(savedVideos);
+          setVideos(parsedVideos);
+        } else {
+          setVideos([]);
+        }
+      } catch (localError) {
+        setVideos([]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -189,6 +214,13 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
                     </div>
                     
                     <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => setSelectedVideo(video)}
+                        className="flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                      >
+                        <Icon name="Play" className="w-4 h-4" />
+                        <span>Посмотреть</span>
+                      </button>
                       <div className="flex items-center text-black">
                         <Icon name="Save" className="w-4 h-4 mr-1" />
                         <span className="text-sm">Сохранено</span>
@@ -201,6 +233,15 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Модальное окно просмотра видео */}
+      {selectedVideo && (
+        <VideoViewer
+          video={selectedVideo}
+          onClose={() => setSelectedVideo(null)}
+          userId={user.id}
+        />
+      )}
     </div>
   );
 };

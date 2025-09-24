@@ -108,6 +108,11 @@ const Index = () => {
       setUploadProgress(30);
 
       // Отправляем данные на сервер
+      console.log('Отправляю данные:', {
+        userId: user?.id || 1,
+        leadDataSize: leadData.videoBase64.length
+      });
+
       const response = await fetch('https://functions.poehali.dev/ad81c32f-6f6d-4eca-9841-da0f99740909', {
         method: 'POST',
         headers: {
@@ -120,8 +125,19 @@ const Index = () => {
       setUploadProgress(70);
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Ошибка сохранения на сервере');
+        const errorText = await response.text();
+        console.error('Ошибка от сервера:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: errorText };
+        }
+        throw new Error(errorData.error || `Ошибка сохранения: ${response.status}`);
       }
 
       const result = await response.json();

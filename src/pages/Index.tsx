@@ -59,13 +59,24 @@ const Index = () => {
       }
 
       console.log('Запрос доступа к камере...');
+      
+      // Определяем Android устройство
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      console.log('Android устройство:', isAndroid);
+      
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment',
-          width: { ideal: 640 },
-          height: { ideal: 360 },
+          width: { ideal: isAndroid ? 426 : 640 },    // 240p для Android (426x240)
+          height: { ideal: isAndroid ? 240 : 360 },   // 240p для Android
+          frameRate: { ideal: isAndroid ? 15 : 30 },  // Меньше FPS для Android
         },
-        audio: true,
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: isAndroid ? 16000 : 48000,      // Меньше частота для Android
+          channelCount: 1,                            // Моно для лучшей совместимости
+        },
       });
       console.log('Получен доступ к камере');
 
@@ -74,8 +85,14 @@ const Index = () => {
         videoRef.current.play();
       }
 
-      // Пробуем разные форматы в порядке приоритета
-      const supportedFormats = [
+      // Приоритет форматов для Android (максимальная совместимость с Telegram)
+      const supportedFormats = isAndroid ? [
+        'video/mp4;codecs=avc1.42E01E,mp4a.40.2',  // H.264 Baseline Profile + AAC-LC (самый совместимый)
+        'video/mp4;codecs=h264,aac',               // H.264 + AAC
+        'video/mp4',                               // MP4 базовый
+        'video/webm;codecs=vp8,opus',             // VP8 как запасной для старых Android
+        ''  // Default format
+      ] : [
         'video/mp4;codecs=h264,aac',
         'video/mp4',
         'video/webm;codecs=vp9,opus',
@@ -98,8 +115,8 @@ const Index = () => {
       console.log('Создаю MediaRecorder с форматом:', selectedFormat || 'default');
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: selectedFormat || undefined,
-        videoBitsPerSecond: 500000, // 500kbps для стабильной отправки в Telegram
-        audioBitsPerSecond: 64000,  // 64kbps для аудио
+        videoBitsPerSecond: isAndroid ? 200000 : 500000,  // 200kbps для Android (240p), 500kbps для остальных
+        audioBitsPerSecond: isAndroid ? 32000 : 64000,    // 32kbps для Android (моно), 64kbps для остальных
       });
       console.log('MediaRecorder создан успешно');
 

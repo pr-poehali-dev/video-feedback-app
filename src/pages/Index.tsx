@@ -106,15 +106,35 @@ const Index = () => {
       }
 
       console.log('Запрос доступа к камере...');
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'environment',
-          width: { ideal: 640 },
-          height: { ideal: 360 },
-        },
-        audio: true,
-      });
-      console.log('Получен доступ к камере');
+      let stream: MediaStream;
+      
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'environment',
+            width: { ideal: 640 },
+            height: { ideal: 360 },
+          },
+          audio: true,
+        });
+        console.log('Получен доступ к камере');
+      } catch (cameraError) {
+        console.error('Ошибка доступа к камере:', cameraError);
+        // Пробуем без аудио
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              width: { ideal: 640 },
+              height: { ideal: 360 },
+            },
+          });
+          console.log('Получен доступ к камере без аудио');
+        } catch (fallbackError) {
+          console.error('Не удалось получить доступ к камере:', fallbackError);
+          alert('Не удалось получить доступ к камере. Проверьте разрешения браузера.');
+          return;
+        }
+      }
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;

@@ -5,15 +5,15 @@ import psycopg2
 from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    '''
+    """
     Business: Сохраняет видео-лид пользователя в базу данных
     Args: event - dict с httpMethod, body, headers
           context - объект с атрибутами request_id, function_name
     Returns: HTTP response dict с результатом сохранения
-    '''
+    """
     method = event.get('httpMethod', 'GET')
     
-    # CORS для всех запросов
+    # CORS headers
     cors_headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -21,16 +21,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
     }
     
-    # OPTIONS запрос
+    # Handle OPTIONS request
     if method == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': cors_headers,
-            'body': json.dumps({'message': 'OK'}),
+            'body': '',
             'isBase64Encoded': False
         }
     
-    # Только POST разрешен для сохранения
+    # Only POST allowed
     if method != 'POST':
         return {
             'statusCode': 405,
@@ -40,13 +40,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
-        # Получаем данные из запроса
+        # Get request data
         headers = event.get('headers', {})
         body = event.get('body', '{}')
         
-        # Получаем user_id из заголовков
+        print(f"[DEBUG] Method: {method}")
+        print(f"[DEBUG] Headers: {headers}")
+        print(f"[DEBUG] Body length: {len(body) if body else 0}")
+        
+        # Get user_id from headers
         user_id = headers.get('X-User-Id') or headers.get('x-user-id')
+        print(f"[DEBUG] User ID: {user_id}")
         if not user_id:
+            print("[ERROR] User ID missing")
             return {
                 'statusCode': 400,
                 'headers': cors_headers,
@@ -54,10 +60,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Парсим JSON body
+        # Parse JSON body
         try:
             body_data = json.loads(body) if body else {}
-        except json.JSONDecodeError:
+            print(f"[DEBUG] Body data keys: {list(body_data.keys()) if body_data else 'none'}")
+        except json.JSONDecodeError as e:
+            print(f"[ERROR] JSON decode error: {str(e)}")
             return {
                 'statusCode': 400,
                 'headers': cors_headers,
@@ -65,7 +73,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Получаем поля
+        # Get fields
         video_base64 = body_data.get('videoBase64', '')
         filename = body_data.get('filename', 'video.mp4')
         original_filename = body_data.get('original_filename', '')
@@ -73,8 +81,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         latitude = body_data.get('latitude')
         longitude = body_data.get('longitude')
         
-        # Проверяем обязательное поле
+        print(f"[DEBUG] Video Base64 length: {len(video_base64) if video_base64 else 0}")
+        print(f"[DEBUG] Comments: {comments}")
+        
+        # Check required field
         if not video_base64:
+            print("[ERROR] Video data is missing")
             return {
                 'statusCode': 400,
                 'headers': cors_headers,
@@ -82,14 +94,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Декодируем base64
+        # Decode base64
         if video_base64.startswith('data:'):
             video_base64 = video_base64.split(',')[1]
         
         video_bytes = base64.b64decode(video_base64)
         file_size = len(video_bytes)
         
-        # Подключение к БД
+        # Database connection
         database_url = os.environ.get('DATABASE_URL')
         if not database_url:
             return {
@@ -99,10 +111,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Сохранение в БД
+        # Save to database
+        print("[DEBUG] Connecting to database...")
         conn = psycopg2.connect(database_url)
         cursor = conn.cursor()
         
+        print(f"[DEBUG] Inserting: user_id={user_id}, filename={filename}, file_size={file_size}")
         cursor.execute('''
             INSERT INTO t_p80273517_video_feedback_app.user_videos 
             (user_id, filename, original_filename, file_size, comments, video_data, latitude, longitude)
@@ -126,6 +140,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor.close()
         conn.close()
         
+        print(f"[SUCCESS] Lead saved with ID: {lead_id}")
+        
         return {
             'statusCode': 200,
             'headers': cors_headers,
@@ -140,6 +156,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
         
     except Exception as e:
+        print(f"[ERROR] Exception occurred: {str(e)}")
+        print(f"[ERROR] Exception type: {type(e).__name__}")
         return {
             'statusCode': 500,
             'headers': cors_headers,

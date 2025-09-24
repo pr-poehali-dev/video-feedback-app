@@ -321,7 +321,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen !bg-white" style={{backgroundColor: 'white'}}>
       <div className="max-w-4xl mx-auto px-6 py-12">
         
         <div className="flex items-center justify-between mb-12">
@@ -349,7 +349,7 @@ const Index = () => {
                 placeholder="Ваше сообщение..."
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
-                className="w-full h-32 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none resize-none"
+                className="w-full h-32 p-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none resize-none text-black"
                 maxLength={500}
               />
             </div>
@@ -371,12 +371,12 @@ const Index = () => {
                 />
                 
                 {/* Заглушка вместо превью */}
-                <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300">
                   <div className="text-center">
                     {!videoState.isRecording && !videoState.recordedBlob && (
                       <>
                         <Icon name="Camera" size={32} className="text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500">Нажмите для записи</p>
+                        <p className="text-gray-600">Нажмите для записи</p>
                       </>
                     )}
                     
@@ -398,7 +398,7 @@ const Index = () => {
                 {!videoState.isRecording && !videoState.recordedBlob && (
                   <button 
                     onClick={startRecording}
-                    className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors"
+                    className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors border-0"
                   >
                     Начать запись
                   </button>
@@ -407,7 +407,7 @@ const Index = () => {
                 {videoState.isRecording && (
                   <button 
                     onClick={stopRecording}
-                    className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors"
+                    className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors border-0"
                   >
                     Остановить
                   </button>
@@ -417,11 +417,11 @@ const Index = () => {
                   <div className="flex space-x-3">
                     <button 
                       onClick={retakeVideo}
-                      className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors border border-gray-300"
                     >
                       Переснять
                     </button>
-                    <div className="flex items-center px-4 py-3 bg-gray-50 text-black rounded-lg">
+                    <div className="flex items-center px-4 py-3 bg-gray-50 text-black rounded-lg border border-gray-300">
                       <Icon name="Check" className="w-4 h-4 mr-2" />
                       Готово
                     </div>
@@ -436,14 +436,14 @@ const Index = () => {
           {isSubmitting && (
             <div className="max-w-md mx-auto">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Загрузка видео</span>
+                <span className="text-sm text-black">Загрузка видео</span>
                 <span className="text-sm font-medium text-black">{Math.round(uploadProgress)}%</span>
               </div>
               <Progress 
                 value={uploadProgress} 
                 className="h-2 bg-gray-200"
               />
-              <div className="mt-2 text-xs text-gray-500">
+              <div className="mt-2 text-xs text-black">
                 {uploadProgress < 30 && "Подготовка видео..."}
                 {uploadProgress >= 30 && uploadProgress < 60 && "Сжатие файла..."}
                 {uploadProgress >= 60 && uploadProgress < 90 && "Отправка в Telegram..."}
@@ -456,7 +456,7 @@ const Index = () => {
           <button 
             onClick={submitLead}
             disabled={!comments.trim() || !videoState.recordedBlob || isSubmitting}
-            className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 ${
+            className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 border-0 ${
               (!comments.trim() || !videoState.recordedBlob || isSubmitting) 
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                 : 'bg-black text-white hover:bg-gray-800 hover:scale-105'

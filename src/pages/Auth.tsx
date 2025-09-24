@@ -94,29 +94,29 @@ const Auth = ({ onAuth }: AuthProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <Card className="w-full max-w-md border border-gray-200">
-        <CardHeader className="text-center">
+    <div className="min-h-screen flex items-center justify-center !bg-white p-4" style={{backgroundColor: 'white'}}>
+      <Card className="w-full max-w-md bg-white border border-gray-300">
+        <CardHeader className="text-center bg-white">
           <div className="flex justify-center mb-4">
             <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
               <Icon name="Video" className="w-6 h-6 text-white" />
             </div>
           </div>
           <CardTitle className="text-2xl text-black">Видео Фидбек</CardTitle>
-          <CardDescription className="text-gray-600">
+          <CardDescription className="text-gray-700">
             Войдите или зарегистрируйтесь для записи видео
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Вход</TabsTrigger>
-              <TabsTrigger value="register">Регистрация</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+              <TabsTrigger value="login" className="text-black data-[state=active]:bg-white data-[state=active]:text-black">Вход</TabsTrigger>
+              <TabsTrigger value="register" className="text-black data-[state=active]:bg-white data-[state=active]:text-black">Регистрация</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login" className="space-y-4 mt-6">
               <div className="space-y-2">
-                <Label htmlFor="login-username">Логин</Label>
+                <Label htmlFor="login-username" className="text-black">Логин</Label>
                 <Input
                   id="login-username"
                   type="text"
@@ -124,10 +124,11 @@ const Auth = ({ onAuth }: AuthProps) => {
                   value={formData.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
                   disabled={isLoading}
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password">Пароль</Label>
+                <Label htmlFor="login-password" className="text-black">Пароль</Label>
                 <Input
                   id="login-password"
                   type="password"
@@ -135,11 +136,12 @@ const Auth = ({ onAuth }: AuthProps) => {
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   disabled={isLoading}
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <Button 
                 onClick={() => handleSubmit('login')} 
-                className="w-full bg-black text-white hover:bg-gray-800" 
+                className="w-full bg-black text-white hover:bg-gray-800 border-0" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -155,7 +157,7 @@ const Auth = ({ onAuth }: AuthProps) => {
             
             <TabsContent value="register" className="space-y-4 mt-6">
               <div className="space-y-2">
-                <Label htmlFor="register-username">Логин</Label>
+                <Label htmlFor="register-username" className="text-black">Логин</Label>
                 <Input
                   id="register-username"
                   type="text"
@@ -163,10 +165,11 @@ const Auth = ({ onAuth }: AuthProps) => {
                   value={formData.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
                   disabled={isLoading}
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-email">Email (необязательно)</Label>
+                <Label htmlFor="register-email" className="text-black">Email (необязательно)</Label>
                 <Input
                   id="register-email"
                   type="email"
@@ -174,10 +177,11 @@ const Auth = ({ onAuth }: AuthProps) => {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   disabled={isLoading}
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-password">Пароль</Label>
+                <Label htmlFor="register-password" className="text-black">Пароль</Label>
                 <Input
                   id="register-password"
                   type="password"
@@ -185,11 +189,12 @@ const Auth = ({ onAuth }: AuthProps) => {
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   disabled={isLoading}
+                  className="bg-white border-gray-300 text-black"
                 />
               </div>
               <Button 
                 onClick={() => handleSubmit('register')} 
-                className="w-full bg-black text-white hover:bg-gray-800" 
+                className="w-full bg-black text-white hover:bg-gray-800 border-0" 
                 disabled={isLoading}
               >
                 {isLoading ? (

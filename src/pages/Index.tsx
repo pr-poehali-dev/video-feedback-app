@@ -79,7 +79,7 @@ const Index = () => {
     chunksRef.current = [];
   };
 
-  const submitLead = useCallback(async () => {
+  const saveLead = useCallback(async () => {
     if (!comments.trim() || !videoState.recordedBlob) {
       return;
     }
@@ -88,48 +88,52 @@ const Index = () => {
     setUploadProgress(0);
 
     try {
-      const formData = new FormData();
-      formData.append('comments', comments);
-      formData.append('video', videoState.recordedBlob, 'lead-video.mp4');
-      
-      if (location) {
-        formData.append('location', JSON.stringify(location));
-        console.log('Отправляю местоположение:', location);
-      }
-
-      // Симуляция прогресса загрузки
+      // Симуляция прогресса сохранения
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
           if (prev >= 90) return prev;
-          return prev + Math.random() * 15;
+          return prev + Math.random() * 20;
         });
-      }, 200);
+      }, 150);
 
-      const response = await fetch('https://functions.poehali.dev/56850dbd-ea0f-428f-b6e0-1814383f74c6', {
-        method: 'POST',
-        headers: {
-          'X-User-Id': user?.id?.toString() || '',
-        },
-        body: formData,
-      });
+      // Создаем объект видео для сохранения
+      const videoData = {
+        id: Date.now(),
+        filename: `lead-video-${Date.now()}.mp4`,
+        original_filename: `video-${new Date().toLocaleDateString('ru-RU')}.mp4`,
+        comments: comments,
+        created_at: new Date().toISOString(),
+        user_id: user?.id || 0,
+        location: location,
+        // Конвертируем blob в base64 для хранения в localStorage
+        videoBase64: await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(videoState.recordedBlob!);
+        })
+      };
 
+      // Получаем существующие видео пользователя
+      const existingVideos = JSON.parse(localStorage.getItem(`user_videos_${user?.id}`) || '[]');
+      
+      // Добавляем новое видео
+      existingVideos.unshift(videoData); // Добавляем в начало массива (новые сверху)
+      
+      // Сохраняем обновленный список
+      localStorage.setItem(`user_videos_${user?.id}`, JSON.stringify(existingVideos));
+      
       clearInterval(progressInterval);
       setUploadProgress(100);
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Ответ сервера:', result);
-        
-        // Небольшая задержка для показа 100%
-        setTimeout(() => {
-          setIsSuccess(true);
-        }, 500);
-      } else {
-        const error = await response.json();
-        console.error('Ошибка отправки:', error);
-      }
+      console.log('Видео сохранено в личном кабинете');
+      
+      // Небольшая задержка для показа 100%
+      setTimeout(() => {
+        setIsSuccess(true);
+      }, 500);
+      
     } catch (error) {
-      console.error('Ошибка отправки:', error);
+      console.error('Ошибка сохранения:', error);
     } finally {
       setTimeout(() => {
         setIsSubmitting(false);
@@ -202,7 +206,7 @@ const Index = () => {
           )}
           
           <button 
-            onClick={submitLead}
+            onClick={saveLead}
             disabled={!comments.trim() || !videoState.recordedBlob || isSubmitting}
             className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 border-0 ${
               (!comments.trim() || !videoState.recordedBlob || isSubmitting) 
@@ -213,10 +217,10 @@ const Index = () => {
             {isSubmitting ? (
               <div className="flex items-center justify-center space-x-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Отправляем...</span>
+                <span>Сохраняем...</span>
               </div>
             ) : (
-              'Отправить'
+              'Сохранить лид'
             )}
           </button>
         </div>

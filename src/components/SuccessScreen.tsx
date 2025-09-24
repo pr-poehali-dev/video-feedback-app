@@ -13,13 +13,13 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ onCreateNew }) => {
           <Icon name="Check" size={24} className="text-white" />
         </div>
         <h2 className="text-2xl font-medium text-black mb-6">
-          Отправлено
+          Лид сохранен
         </h2>
         <button 
           onClick={onCreateNew}
           className="w-full bg-black text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors"
         >
-          Создать новый
+          Создать новый лид
         </button>
       </div>
     </div>

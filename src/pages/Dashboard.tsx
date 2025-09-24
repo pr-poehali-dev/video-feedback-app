@@ -37,29 +37,18 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
 
   const fetchUserVideos = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/5cd3f9cb-f1b6-4a32-a979-a2271f9a1b34', {
-        method: 'GET',
-        headers: {
-          'X-User-Id': user.id.toString(),
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setVideos(data.videos || []);
-        }
+      // Загружаем видео из localStorage вместо API
+      const savedVideos = localStorage.getItem(`user_videos_${user.id}`);
+      if (savedVideos) {
+        const parsedVideos = JSON.parse(savedVideos);
+        setVideos(parsedVideos);
       } else {
-        toast({
-          title: "Ошибка",
-          description: "Не удалось загрузить видео",
-          variant: "destructive"
-        });
+        setVideos([]);
       }
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось подключиться к серверу",
+        description: "Не удалось загрузить видео",
         variant: "destructive"
       });
     } finally {
@@ -125,12 +114,12 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
           
           <Card className="bg-white border border-gray-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-black">Отправлено в Telegram</CardTitle>
-              <Icon name="Send" className="h-4 w-4 text-gray-500" />
+              <CardTitle className="text-sm font-medium text-black">Сохранено лидов</CardTitle>
+              <Icon name="Save" className="h-4 w-4 text-gray-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-black">
-                {videos.filter(v => v.telegram_sent).length}
+                {videos.length}
               </div>
             </CardContent>
           </Card>
@@ -200,17 +189,10 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      {video.telegram_sent ? (
-                        <div className="flex items-center text-black">
-                          <Icon name="Check" className="w-4 h-4 mr-1" />
-                          <span className="text-sm">Отправлено</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-gray-600">
-                          <Icon name="Clock" className="w-4 h-4 mr-1" />
-                          <span className="text-sm">Обрабатывается</span>
-                        </div>
-                      )}
+                      <div className="flex items-center text-black">
+                        <Icon name="Save" className="w-4 h-4 mr-1" />
+                        <span className="text-sm">Сохранено</span>
+                      </div>
                     </div>
                   </div>
                 ))}

@@ -9,7 +9,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ uploadProgress })
   return (
     <div className="max-w-md mx-auto">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-black">Загрузка видео</span>
+        <span className="text-sm text-black">Сохранение лида</span>
         <span className="text-sm font-medium text-black">{Math.round(uploadProgress)}%</span>
       </div>
       <Progress 
@@ -19,7 +19,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ uploadProgress })
       <div className="mt-2 text-xs text-black">
         {uploadProgress < 30 && "Подготовка видео..."}
         {uploadProgress >= 30 && uploadProgress < 60 && "Сжатие файла..."}
-        {uploadProgress >= 60 && uploadProgress < 90 && "Отправка в Telegram..."}
+        {uploadProgress >= 60 && uploadProgress < 90 && "Сохранение в кабинет..."}
         {uploadProgress >= 90 && uploadProgress < 100 && "Почти готово..."}
         {uploadProgress >= 100 && "Готово!"}
       </div>

@@ -94,16 +94,16 @@ const Auth = ({ onAuth }: AuthProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <Card className="w-full max-w-md border border-gray-200">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
               <Icon name="Video" className="w-6 h-6 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Видео Фидбек</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl text-black">Видео Фидбек</CardTitle>
+          <CardDescription className="text-gray-600">
             Войдите или зарегистрируйтесь для записи видео
           </CardDescription>
         </CardHeader>
@@ -139,7 +139,7 @@ const Auth = ({ onAuth }: AuthProps) => {
               </div>
               <Button 
                 onClick={() => handleSubmit('login')} 
-                className="w-full" 
+                className="w-full bg-black text-white hover:bg-gray-800" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -189,7 +189,7 @@ const Auth = ({ onAuth }: AuthProps) => {
               </div>
               <Button 
                 onClick={() => handleSubmit('register')} 
-                className="w-full" 
+                className="w-full bg-black text-white hover:bg-gray-800" 
                 disabled={isLoading}
               >
                 {isLoading ? (

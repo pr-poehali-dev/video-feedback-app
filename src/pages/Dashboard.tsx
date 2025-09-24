@@ -72,16 +72,16 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-white p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
               <Icon name="Video" className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Личный кабинет</h1>
+              <h1 className="text-2xl font-bold text-black">Личный кабинет</h1>
               <p className="text-gray-600">Добро пожаловать, {user.username}!</p>
             </div>
           </div>
@@ -89,7 +89,7 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
           <div className="flex items-center space-x-3">
             <Button 
               onClick={onStartRecording} 
-              className="bg-red-500 hover:bg-red-600"
+              className="bg-black text-white hover:bg-gray-800"
             >
               <Icon name="Video" className="w-4 h-4 mr-2" />
               Записать видео
@@ -97,6 +97,7 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
             <Button 
               variant="outline" 
               onClick={onLogout}
+              className="border-gray-200 text-black hover:bg-gray-50"
             >
               <Icon name="LogOut" className="w-4 h-4 mr-2" />
               Выйти
@@ -106,47 +107,47 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="border border-gray-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Всего видео</CardTitle>
-              <Icon name="Video" className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-black">Всего видео</CardTitle>
+              <Icon name="Video" className="h-4 w-4 text-gray-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{videos.length}</div>
+              <div className="text-2xl font-bold text-black">{videos.length}</div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="border border-gray-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Отправлено в Telegram</CardTitle>
-              <Icon name="Send" className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-black">Отправлено в Telegram</CardTitle>
+              <Icon name="Send" className="h-4 w-4 text-gray-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-black">
                 {videos.filter(v => v.telegram_sent).length}
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="border border-gray-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Аккаунт</CardTitle>
-              <Icon name="User" className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-black">Аккаунт</CardTitle>
+              <Icon name="User" className="h-4 w-4 text-gray-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-sm font-medium">{user.username}</div>
+              <div className="text-sm font-medium text-black">{user.username}</div>
               {user.email && (
-                <div className="text-xs text-muted-foreground">{user.email}</div>
+                <div className="text-xs text-gray-500">{user.email}</div>
               )}
             </CardContent>
           </Card>
         </div>
 
         {/* Videos List */}
-        <Card>
+        <Card className="border border-gray-200">
           <CardHeader>
-            <CardTitle>Ваши видео</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-black">Ваши видео</CardTitle>
+            <CardDescription className="text-gray-600">
               История записанных видео и их статус
             </CardDescription>
           </CardHeader>
@@ -158,14 +159,14 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
               </div>
             ) : videos.length === 0 ? (
               <div className="text-center py-12">
-                <Icon name="Video" className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <Icon name="Video" className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-black mb-2">
                   Пока нет видео
                 </h3>
                 <p className="text-gray-600 mb-6">
                   Запишите своё первое видео, чтобы начать получать фидбек
                 </p>
-                <Button onClick={onStartRecording} className="bg-red-500 hover:bg-red-600">
+                <Button onClick={onStartRecording} className="bg-black text-white hover:bg-gray-800">
                   <Icon name="Video" className="w-4 h-4 mr-2" />
                   Записать видео
                 </Button>
@@ -178,11 +179,11 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <Icon name="Play" className="w-5 h-5 text-blue-600" />
+                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Icon name="Play" className="w-5 h-5 text-black" />
                       </div>
                       <div>
-                        <h4 className="font-medium">{video.original_filename || video.filename}</h4>
+                        <h4 className="font-medium text-black">{video.original_filename || video.filename}</h4>
                         <p className="text-sm text-gray-600 max-w-md truncate">
                           {video.comments}
                         </p>
@@ -194,12 +195,12 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
                     
                     <div className="flex items-center space-x-2">
                       {video.telegram_sent ? (
-                        <div className="flex items-center text-green-600">
+                        <div className="flex items-center text-black">
                           <Icon name="Check" className="w-4 h-4 mr-1" />
                           <span className="text-sm">Отправлено</span>
                         </div>
                       ) : (
-                        <div className="flex items-center text-orange-600">
+                        <div className="flex items-center text-gray-600">
                           <Icon name="Clock" className="w-4 h-4 mr-1" />
                           <span className="text-sm">Обрабатывается</span>
                         </div>

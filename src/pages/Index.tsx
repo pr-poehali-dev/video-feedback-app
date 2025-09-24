@@ -303,15 +303,15 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6">
         <div className="w-full max-w-sm text-center">
-          <div className="w-16 h-16 mx-auto mb-6 bg-green-500 rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-6 bg-black rounded-full flex items-center justify-center">
             <Icon name="Check" size={24} className="text-white" />
           </div>
-          <h2 className="text-2xl font-medium text-gray-900 mb-6">
+          <h2 className="text-2xl font-medium text-black mb-6">
             Отправлено
           </h2>
           <button 
             onClick={createNewLead}
-            className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors"
+            className="w-full bg-black text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors"
           >
             Создать новый
           </button>
@@ -342,14 +342,14 @@ const Index = () => {
           
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-black mb-3">
                 Комментарий
               </label>
               <textarea
                 placeholder="Ваше сообщение..."
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
-                className="w-full h-32 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                className="w-full h-32 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none resize-none"
                 maxLength={500}
               />
             </div>
@@ -357,7 +357,7 @@ const Index = () => {
 
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-black mb-3">
                 Видео
               </label>
               
@@ -398,7 +398,7 @@ const Index = () => {
                 {!videoState.isRecording && !videoState.recordedBlob && (
                   <button 
                     onClick={startRecording}
-                    className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+                    className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors"
                   >
                     Начать запись
                   </button>
@@ -421,7 +421,7 @@ const Index = () => {
                     >
                       Переснять
                     </button>
-                    <div className="flex items-center px-4 py-3 bg-green-50 text-green-700 rounded-lg">
+                    <div className="flex items-center px-4 py-3 bg-gray-50 text-black rounded-lg">
                       <Icon name="Check" className="w-4 h-4 mr-2" />
                       Готово
                     </div>
@@ -459,7 +459,7 @@ const Index = () => {
             className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 ${
               (!comments.trim() || !videoState.recordedBlob || isSubmitting) 
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                : 'bg-blue-500 text-white hover:bg-blue-600 hover:scale-105'
+                : 'bg-black text-white hover:bg-gray-800 hover:scale-105'
             }`}
           >
             {isSubmitting ? (

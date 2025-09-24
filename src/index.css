@@ -6,22 +6,22 @@
 
 @layer base {
   :root {
-    --background: 255 255 255; /* Чистый белый */
-    --foreground: 30 41 59; /* Темно-серый для текста */
-    --card: 255 255 255; /* Белый для карточек */
-    --card-foreground: 30 41 59; /* Темно-серый */
-    --primary: 59 130 246; /* Голубой */
+    --background: 255 255 255; /* Белый */
+    --foreground: 0 0 0; /* Черный */
+    --card: 255 255 255; /* Белый */
+    --card-foreground: 0 0 0; /* Черный */
+    --primary: 0 0 0; /* Черный */
     --primary-foreground: 255 255 255; /* Белый */
-    --secondary: 241 245 249; /* Очень светло-голубой */
-    --secondary-foreground: 30 41 59; /* Темно-серый */
-    --muted: 248 250 252; /* Светло-голубой */
-    --muted-foreground: 100 116 139; /* Серый */
-    --accent: 219 234 254; /* Голубой акцент */
-    --accent-foreground: 30 41 59; /* Темно-серый */
-    --border: 226 232 240; /* Светло-серый */
+    --secondary: 248 250 252; /* Очень светло-серый */
+    --secondary-foreground: 0 0 0; /* Черный */
+    --muted: 248 250 252; /* Светло-серый */
+    --muted-foreground: 107 114 128; /* Серый */
+    --accent: 248 250 252; /* Светло-серый */
+    --accent-foreground: 0 0 0; /* Черный */
+    --border: 229 231 235; /* Светло-серый */
     --input: 255 255 255; /* Белый */
-    --ring: 59 130 246; /* Голубой */
-    --radius: 12px;
+    --ring: 0 0 0; /* Черный */
+    --radius: 8px;
   }
 }
 
@@ -36,10 +36,24 @@
 
   body {
     background: white !important;
-    color: #1e293b !important;
+    color: black !important;
     font-family: "Inter", sans-serif !important;
     line-height: 1.6;
   }
 }
 
-/* Минималистичный дизайн */
+/* Минималистичный черно-белый дизайн */
+
+/* Кнопки */
+.btn-primary {
+  @apply bg-black text-white hover:bg-gray-800;
+}
+
+.btn-secondary {
+  @apply bg-white text-black border border-gray-200 hover:bg-gray-50;
+}
+
+/* Карточки */
+.card {
+  @apply bg-white border border-gray-200;
+}

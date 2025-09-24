@@ -1,6 +1,8 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { Progress } from '@/components/ui/progress';
+import Auth from './Auth';
+import Dashboard from './Dashboard';
 
 interface VideoRecordingState {
   isRecording: boolean;
@@ -17,6 +19,9 @@ interface LocationData {
 
 
 const Index = () => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState('');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'recording'>('dashboard');
   const [comments, setComments] = useState('');
   const [videoState, setVideoState] = useState<VideoRecordingState>({
     isRecording: false,
@@ -31,6 +36,48 @@ const Index = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  
+  // Проверяем авторизацию при загрузке
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+    if (savedUser && savedToken) {
+      setUser(JSON.parse(savedUser));
+      setToken(savedToken);
+    }
+  }, []);
+
+  const handleAuth = (userData: any, userToken: string) => {
+    setUser(userData);
+    setToken(userToken);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setUser(null);
+    setToken('');
+    setCurrentView('dashboard');
+  };
+
+  const handleStartRecording = () => {
+    setCurrentView('recording');
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentView('dashboard');
+    // Сбрасываем состояние записи
+    setComments('');
+    setVideoState({
+      isRecording: false,
+      recordedBlob: null,
+      stream: null,
+    });
+    setIsSuccess(false);
+    setUploadProgress(0);
+    setLocation(null);
+    chunksRef.current = [];
+  };
 
   const startRecording = useCallback(async () => {
     try {
@@ -200,8 +247,11 @@ const Index = () => {
         });
       }, 200);
 
-      const response = await fetch('https://functions.poehali.dev/dbc5b737-4ec3-4728-8821-efee0a87c56c', {
+      const response = await fetch('https://functions.poehali.dev/56850dbd-ea0f-428f-b6e0-1814383f74c6', {
         method: 'POST',
+        headers: {
+          'X-User-Id': user?.id?.toString() || '',
+        },
         body: formData,
       });
 
@@ -231,17 +281,23 @@ const Index = () => {
   }, [comments, videoState.recordedBlob, location]);
 
   const createNewLead = useCallback(() => {
-    setComments('');
-    setVideoState({
-      isRecording: false,
-      recordedBlob: null,
-      stream: null,
-    });
-    setIsSuccess(false);
-    setUploadProgress(0);
-    setLocation(null);
-    chunksRef.current = [];
+    handleBackToDashboard();
   }, []);
+
+  // Если пользователь не авторизован, показываем страницу авторизации
+  if (!user) {
+    return <Auth onAuth={handleAuth} />;
+  }
+
+  // Если пользователь на главной странице dashboard
+  if (currentView === 'dashboard') {
+    return <Dashboard 
+      user={user} 
+      token={token} 
+      onLogout={handleLogout} 
+      onStartRecording={handleStartRecording} 
+    />;
+  }
 
   if (isSuccess) {
     return (
@@ -268,10 +324,18 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 py-12">
         
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-medium text-gray-900 mb-4">
-            Создайте Лид
+        <div className="flex items-center justify-between mb-12">
+          <button 
+            onClick={handleBackToDashboard}
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <Icon name="ArrowLeft" className="w-5 h-5 mr-2" />
+            Назад к кабинету
+          </button>
+          <h1 className="text-3xl font-medium text-gray-900">
+            Записать видео
           </h1>
+          <div className="w-20"></div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">

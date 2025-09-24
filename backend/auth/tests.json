@@ -1,0 +1,49 @@
+{
+  "tests": [{
+    "name": "Test OPTIONS CORS request",
+    "method": "OPTIONS",
+    "path": "/",
+    "expectedStatus": 200,
+    "expectedBody": "",
+    "bodyMatcher": "exact"
+  }, {
+    "name": "Test user registration",
+    "method": "POST",
+    "path": "/",
+    "body": "{\"action\":\"register\",\"username\":\"testuser\",\"password\":\"testpass123\",\"email\":\"test@example.com\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "expectedStatus": 201,
+    "expectedBody": {
+      "success": true,
+      "message": "string",
+      "user": {
+        "id": "number",
+        "username": "string",
+        "email": "string"
+      },
+      "token": "string"
+    },
+    "bodyMatcher": "partial"
+  }, {
+    "name": "Test user login",
+    "method": "POST",
+    "path": "/",
+    "body": "{\"action\":\"login\",\"username\":\"admin\",\"password\":\"admin123\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "expectedStatus": 200,
+    "expectedBody": {
+      "success": true,
+      "message": "string",
+      "user": {
+        "id": "number", 
+        "username": "string"
+      },
+      "token": "string"
+    },
+    "bodyMatcher": "partial"
+  }]
+}

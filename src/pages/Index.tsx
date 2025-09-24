@@ -373,11 +373,11 @@ const Index = () => {
             <div className="max-w-md mx-auto">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-600">Загрузка видео</span>
-                <span className="text-sm font-medium text-blue-600">{Math.round(uploadProgress)}%</span>
+                <span className="text-sm font-medium text-black">{Math.round(uploadProgress)}%</span>
               </div>
               <Progress 
                 value={uploadProgress} 
-                className="h-2"
+                className="h-2 bg-gray-200"
               />
               <div className="mt-2 text-xs text-gray-500">
                 {uploadProgress < 30 && "Подготовка видео..."}

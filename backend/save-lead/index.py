@@ -99,16 +99,42 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Временно возвращаем успешный ответ без сохранения в БД для отладки
+        # Сохранение в БД
+        conn = psycopg2.connect(database_url)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO t_p80273517_video_feedback_app.user_videos 
+            (user_id, filename, original_filename, file_size, comments, video_data, latitude, longitude)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, created_at
+        ''', (
+            int(user_id),
+            filename,
+            original_filename,
+            file_size,
+            comments,
+            video_bytes,
+            latitude,
+            longitude
+        ))
+        
+        result = cursor.fetchone()
+        lead_id, created_at = result
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
         return {
             'statusCode': 200,
             'headers': cors_headers,
             'body': json.dumps({
                 'success': True,
-                'lead_id': 999,
-                'created_at': '2025-09-24T16:20:00.000Z',
+                'lead_id': lead_id,
+                'created_at': created_at.isoformat(),
                 'file_size': file_size,
-                'message': 'Лид сохранен (тестовый режим)'
+                'message': 'Лид успешно сохранен в базе данных'
             }),
             'isBase64Encoded': False
         }

@@ -13,24 +13,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     method: str = event.get('httpMethod', 'GET')
     
+    cors_headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
+    }
+    
     # Handle CORS OPTIONS request
     if method == 'OPTIONS':
         return {
             'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
-                'Access-Control-Max-Age': '86400'
-            },
-            'body': '',
+            'headers': cors_headers,
+            'body': json.dumps({'message': 'OK'}),
             'isBase64Encoded': False
         }
     
     if method != 'GET':
         return {
             'statusCode': 405,
-            'headers': {'Access-Control-Allow-Origin': '*'},
+            'headers': cors_headers,
             'body': json.dumps({'error': 'Method not allowed'}),
             'isBase64Encoded': False
         }
@@ -43,7 +45,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if not user_id:
             return {
                 'statusCode': 400,
-                'headers': {'Access-Control-Allow-Origin': '*'},
+                'headers': cors_headers,
                 'body': json.dumps({'error': 'User ID is required'}),
                 'isBase64Encoded': False
             }
@@ -57,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if not database_url:
             return {
                 'statusCode': 500,
-                'headers': {'Access-Control-Allow-Origin': '*'},
+                'headers': cors_headers,
                 'body': json.dumps({'error': 'Database connection not configured'}),
                 'isBase64Encoded': False
             }
@@ -70,7 +72,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             query = '''
                 SELECT id, filename, original_filename, file_size, duration, comments, 
                        created_at, latitude, longitude, video_data
-                FROM user_videos 
+                FROM t_p80273517_video_feedback_app.user_videos 
                 WHERE user_id = %s AND id = %s
             '''
             cursor.execute(query, (int(user_id), int(video_id)))
@@ -81,7 +83,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 conn.close()
                 return {
                     'statusCode': 404,
-                    'headers': {'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'Video not found'}),
                     'isBase64Encoded': False
                 }
@@ -104,12 +106,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             return {
                 'statusCode': 200,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
-                },
+                'headers': cors_headers,
                 'body': json.dumps(video_data),
                 'isBase64Encoded': False
             }
@@ -120,7 +117,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 query = '''
                     SELECT id, filename, original_filename, file_size, duration, comments, 
                            created_at, latitude, longitude, video_data
-                    FROM user_videos 
+                    FROM t_p80273517_video_feedback_app.user_videos 
                     WHERE user_id = %s 
                     ORDER BY created_at DESC
                 '''
@@ -128,7 +125,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 query = '''
                     SELECT id, filename, original_filename, file_size, duration, comments, 
                            created_at, latitude, longitude
-                    FROM user_videos 
+                    FROM t_p80273517_video_feedback_app.user_videos 
                     WHERE user_id = %s 
                     ORDER BY created_at DESC
                 '''
@@ -161,12 +158,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             return {
                 'statusCode': 200,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
-                },
+                'headers': cors_headers,
                 'body': json.dumps({
                     'leads': leads,
                     'count': len(leads)
@@ -177,7 +169,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     except Exception as e:
         return {
             'statusCode': 500,
-            'headers': {'Access-Control-Allow-Origin': '*'},
+            'headers': cors_headers,
             'body': json.dumps({'error': f'Server error: {str(e)}'}),
             'isBase64Encoded': False
         }

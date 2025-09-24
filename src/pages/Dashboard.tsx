@@ -43,7 +43,7 @@ const Dashboard = ({ user, onLogout, onStartRecording }: DashboardProps) => {
   const fetchUserVideos = async () => {
     try {
       // Загружаем видео с сервера
-      const response = await fetch('https://functions.poehali.dev/e345983f-3726-484e-b8ae-2061c433834e', {
+      const response = await fetch('https://functions.poehali.dev/e21009da-4465-40ec-8df7-f3de39c8b10d', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

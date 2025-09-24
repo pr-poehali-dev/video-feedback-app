@@ -1,5 +1,5 @@
 {
-  "get-user-leads": "https://functions.poehali.dev/e345983f-3726-484e-b8ae-2061c433834e",
+  "get-leads": "https://functions.poehali.dev/e21009da-4465-40ec-8df7-f3de39c8b10d",
   "save-lead": "https://functions.poehali.dev/ad81c32f-6f6d-4eca-9841-da0f99740909",
   "test-auth": "https://functions.poehali.dev/de007e99-a3b4-476d-8ed8-357cde674e27",
   "auth2": "https://functions.poehali.dev/7ecca539-d662-426e-ab1f-5a4509fc9524"

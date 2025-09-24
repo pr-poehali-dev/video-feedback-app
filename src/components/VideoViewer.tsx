@@ -40,7 +40,7 @@ const VideoViewer: React.FC<VideoViewerProps> = ({ video, onClose, userId }) => 
     setError(null);
 
     try {
-      const response = await fetch(`https://functions.poehali.dev/e345983f-3726-484e-b8ae-2061c433834e?video_id=${video.id}`, {
+      const response = await fetch(`https://functions.poehali.dev/e21009da-4465-40ec-8df7-f3de39c8b10d?video_id=${video.id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

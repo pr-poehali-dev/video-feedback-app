@@ -48,49 +48,84 @@ const Auth = ({ onAuth }: AuthProps) => {
 
     setIsLoading(true);
 
-    try {
-      const response = await fetch('https://functions.poehali.dev/0dc6a629-2a21-4339-b825-58fee2fcaec2', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action,
-          username: formData.username,
-          password: formData.password,
-          email: action === 'register' ? formData.email : undefined
-        })
-      });
+    // Имитация работы сервера
+    setTimeout(() => {
+      try {
+        if (action === 'register') {
+          // Проверяем, есть ли уже такой пользователь
+          const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+          const userExists = existingUsers.find((u: any) => u.username === formData.username);
+          
+          if (userExists) {
+            toast({
+              title: "Ошибка",
+              description: "Пользователь с таким логином уже существует",
+              variant: "destructive"
+            });
+            setIsLoading(false);
+            return;
+          }
 
-      const data: AuthResponse = await response.json();
+          // Создаем нового пользователя
+          const newUser = {
+            id: Date.now(),
+            username: formData.username,
+            email: formData.email || null,
+            password: formData.password // В реальном приложении пароль нужно хэшировать
+          };
 
-      if (data.success) {
-        toast({
-          title: "Успешно!",
-          description: data.message,
-        });
-        
-        // Сохраняем данные пользователя в localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.token);
-        
-        onAuth(data.user, data.token);
-      } else {
+          existingUsers.push(newUser);
+          localStorage.setItem('users', JSON.stringify(existingUsers));
+          
+          const token = `token_${newUser.id}_${Date.now()}`;
+          localStorage.setItem('user', JSON.stringify(newUser));
+          localStorage.setItem('token', token);
+
+          toast({
+            title: "Успешно!",
+            description: "Регистрация прошла успешно",
+          });
+
+          onAuth(newUser, token);
+          
+        } else if (action === 'login') {
+          // Ищем пользователя
+          const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+          const user = existingUsers.find((u: any) => 
+            u.username === formData.username && u.password === formData.password
+          );
+          
+          if (!user) {
+            toast({
+              title: "Ошибка",
+              description: "Неверный логин или пароль",
+              variant: "destructive"
+            });
+            setIsLoading(false);
+            return;
+          }
+
+          const token = `token_${user.id}_${Date.now()}`;
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('token', token);
+
+          toast({
+            title: "Успешно!",
+            description: "Вход выполнен успешно",
+          });
+
+          onAuth(user, token);
+        }
+      } catch (error) {
         toast({
           title: "Ошибка",
-          description: data.error || 'Произошла ошибка',
+          description: "Произошла ошибка при обработке запроса",
           variant: "destructive"
         });
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось подключиться к серверу",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    }, 1000); // Имитация задержки сервера
   };
 
   return (

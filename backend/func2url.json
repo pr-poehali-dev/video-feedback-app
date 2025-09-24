@@ -1,4 +1,6 @@
 {
+  "test-auth": "https://functions.poehali.dev/de007e99-a3b4-476d-8ed8-357cde674e27",
+  "auth2": "https://functions.poehali.dev/7ecca539-d662-426e-ab1f-5a4509fc9524",
   "user-videos": "https://functions.poehali.dev/5cd3f9cb-f1b6-4a32-a979-a2271f9a1b34",
   "telegram-sender": "https://functions.poehali.dev/dbc5b737-4ec3-4728-8821-efee0a87c56c",
   "telegram-submit": "https://functions.poehali.dev/56850dbd-ea0f-428f-b6e0-1814383f74c6"

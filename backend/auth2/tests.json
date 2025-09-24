@@ -14,9 +14,9 @@
       "path": "/",
       "body": {
         "action": "register",
-        "username": "testuser123",
+        "username": "testuser456",
         "password": "testpass",
-        "email": "test@example.com"
+        "email": "test2@example.com"
       },
       "expectedStatus": 201,
       "expectedBody": {
